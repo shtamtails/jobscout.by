@@ -1,0 +1,24 @@
+header {
+  display: flex !important;
+  height: 100%;
+  align-items: center;
+  .app-logo {
+    min-width: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  .app-actions {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-right: 30px;
+    .header-action {
+      cursor: pointer;
+      margin-left: 10px;
+    }
+  }
+}

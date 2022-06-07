@@ -1,57 +1,49 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import { useState } from "react";
+import {
+  AppShell,
+  ColorScheme,
+  ColorSchemeProvider,
+  Header,
+  MantineProvider,
+  Navbar,
+} from "@mantine/core";
+import { Route, Routes } from "react-router-dom";
+import { Login } from "./pages/Login";
+import { HeaderContent } from "./pages/HeaderContent";
 
 function App() {
+  const [colorScheme, setColorScheme] = useState<ColorScheme>("dark");
+  const toggleColorScheme = (value?: ColorScheme) =>
+    setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
+    <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
+      <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
+        <AppShell
+          padding="md"
+          navbar={
+            <Navbar width={{ base: 300 }} p="xs">
+              {/* Navbar content */}
+            </Navbar>
+          }
+          header={
+            <Header height={60}>
+              <HeaderContent />
+            </Header>
+          }
+          styles={(theme) => ({
+            main: {
+              backgroundColor:
+                theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.colors.gray[0],
+            },
+          })}
+        >
+          <Routes>
+            <Route path="login" element={<Login />} />
+          </Routes>
+        </AppShell>
+      </MantineProvider>
+    </ColorSchemeProvider>
   );
 }
 
