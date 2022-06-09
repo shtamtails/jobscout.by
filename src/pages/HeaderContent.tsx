@@ -17,6 +17,8 @@ import {
   Photo,
   Search,
   Trash,
+  Language,
+  DoorExit,
 } from "tabler-icons-react";
 
 export const HeaderContent: React.FC = () => {
@@ -64,11 +66,11 @@ export const HeaderContent: React.FC = () => {
           }
         >
           <Menu.Label>Account</Menu.Label>
-          <Menu.Item icon={<MessageCircle size={14} />}>Profile</Menu.Item>
-          <Menu.Item icon={<Settings size={14} />}>Settings</Menu.Item>
-          <Menu.Item icon={<Photo size={14} />}>Language</Menu.Item>
+          <Menu.Item icon={<User size={18} />}>Profile</Menu.Item>
+          <Menu.Item icon={<Settings size={18} />}>Settings</Menu.Item>
+          <Menu.Item icon={<Language size={18} />}>Language</Menu.Item>
           <Divider />
-          <Menu.Item color="red" icon={<Trash size={14} />}>
+          <Menu.Item color="red" icon={<DoorExit size={18} />}>
             Log out
           </Menu.Item>
         </Menu>
