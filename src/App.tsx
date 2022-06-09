@@ -40,9 +40,7 @@ function App() {
               },
             })}
           >
-            <Routes>
-              <Route path="login" element={<Login />} />
-            </Routes>
+            <Routes>{/* <Route path="login" element={<Login />} /> */}</Routes>
           </AppShell>
         </ModalsProvider>
       </MantineProvider>

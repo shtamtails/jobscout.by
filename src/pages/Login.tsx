@@ -4,9 +4,17 @@ import { useModals } from "@mantine/modals";
 import React, { useRef } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useAppSelector, useAppDispatch } from "../hooks/redux";
+import { setAuthorization } from "../store/reducers/userReducer";
 
-export const Login = () => {
-  const [opened, setOpened] = useState<boolean>(true);
+interface loginProps {
+  opened: boolean;
+  setOpened: any;
+}
+
+export const Login: React.FC<loginProps> = ({ opened, setOpened }) => {
+  const dispatch = useAppDispatch();
+
   const [registerModal, setRegisterModal] = useState<boolean>(false);
 
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -38,11 +46,25 @@ export const Login = () => {
         value !== "admin@mail.com" ? null : "Account with this e-mail already exists",
       password: (value) =>
         value.length < 6 ? "Password length should be more than 6 symbols" : null,
-      confirmPassword: (value) =>
-        value === passwordRef.current?.value ? null : "Passwords should match",
+      confirmPassword: (value, values) =>
+        value === values.password ? null : "Passwords should match",
       termsOfService: (value) => (value ? null : "You should accept terms of serivce"),
     },
   });
+
+  const handleLogin = () => {
+    // check from db
+
+    dispatch(setAuthorization(true));
+    setOpened(false);
+  };
+
+  const handleRegistration = () => {
+    // push to db
+
+    dispatch(setAuthorization(true));
+    setOpened(false);
+  };
 
   return (
     <Modal
@@ -53,7 +75,7 @@ export const Login = () => {
       title="Login or create account"
     >
       {!registerModal ? (
-        <form onSubmit={loginForm.onSubmit((values) => console.log("Loggined in"))}>
+        <form onSubmit={loginForm.onSubmit((values) => handleLogin())}>
           <TextInput
             placeholder="Username"
             label="Username"
@@ -99,7 +121,7 @@ export const Login = () => {
           </div>
         </form>
       ) : (
-        <form onSubmit={registerForm.onSubmit((values) => console.log("registered"))}>
+        <form onSubmit={registerForm.onSubmit((values) => handleRegistration())}>
           <TextInput
             placeholder="Username"
             label="Username"
