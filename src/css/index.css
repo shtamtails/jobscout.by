@@ -275,3 +275,9 @@ a {
 .p-h-xl {
   padding: 0 40px;
 }
+
+.flex {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}

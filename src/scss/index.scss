@@ -97,3 +97,7 @@ $spacing-map: (
 .p {
   @include spacing-utility(padding);
 }
+
+.flex {
+  display: flex;
+}
