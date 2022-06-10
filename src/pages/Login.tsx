@@ -6,6 +6,9 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../hooks/redux";
 import { setAuthorization } from "../store/reducers/userReducer";
+import { LoginForm } from "./LoginForm";
+import { RegisterForm } from "./RegisterForm";
+import { RetrieveForm } from "./RetrieveForm";
 
 interface loginProps {
   opened: boolean;
@@ -13,58 +16,9 @@ interface loginProps {
 }
 
 export const Login: React.FC<loginProps> = ({ opened, setOpened }) => {
-  const dispatch = useAppDispatch();
-
-  const [registerModal, setRegisterModal] = useState<boolean>(false);
-
-  const passwordRef = useRef<HTMLInputElement>(null);
-
-  const loginForm = useForm({
-    initialValues: {
-      username: "",
-      password: "",
-    },
-
-    validate: {
-      username: (value) => (value === "admin" ? null : "Invalid username"),
-      password: (value) => (value === "root" ? null : "Invalid password"),
-    },
-  });
-
-  const registerForm = useForm({
-    initialValues: {
-      username: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      termsOfService: false,
-    },
-
-    validate: {
-      username: (value) => (value !== "admin" ? null : "Account with this username already exists"),
-      email: (value) =>
-        value !== "admin@mail.com" ? null : "Account with this e-mail already exists",
-      password: (value) =>
-        value.length < 6 ? "Password length should be more than 6 symbols" : null,
-      confirmPassword: (value, values) =>
-        value === values.password ? null : "Passwords should match",
-      termsOfService: (value) => (value ? null : "You should accept terms of serivce"),
-    },
-  });
-
-  const handleLogin = () => {
-    // check from db
-
-    dispatch(setAuthorization(true));
-    setOpened(false);
-  };
-
-  const handleRegistration = () => {
-    // push to db
-
-    dispatch(setAuthorization(true));
-    setOpened(false);
-  };
+  const [loginForm, setLoginForm] = useState<boolean>(false);
+  const [registerForm, setRegisterForm] = useState<boolean>(false);
+  const [retrieveForm, setRetrieveForm] = useState<boolean>(false);
 
   return (
     <Modal
@@ -74,107 +28,29 @@ export const Login: React.FC<loginProps> = ({ opened, setOpened }) => {
       onClose={() => setOpened(false)}
       title="Login or create account"
     >
-      {!registerModal ? (
-        <form onSubmit={loginForm.onSubmit((values) => handleLogin())}>
-          <TextInput
-            placeholder="Username"
-            label="Username"
-            required
-            size="md"
-            className="m-v-md"
-            {...loginForm.getInputProps("username")}
-          />
-          <PasswordInput
-            placeholder="Password"
-            className="m-v-md"
-            size="md"
-            label="Password"
-            required
-            {...loginForm.getInputProps("password")}
-          />
+      {loginForm && !registerForm && !retrieveForm && (
+        <LoginForm
+          setOpened={setOpened}
+          setRegisterModal={setRegisterForm}
+          setRetrieveModal={setRetrieveForm}
+        />
+      )}
+      <LoginForm
+        setOpened={setOpened}
+        setRegisterModal={setRegisterForm}
+        setRetrieveModal={setRetrieveForm}
+      />
 
-          <Link to="/retrieve">
-            <Text variant="link">Forgot password?</Text>
-          </Link>
-          <div className="login-buttons">
-            <Button
-              variant="subtle"
-              fullWidth
-              size="md"
-              className="m-r-sm"
-              onClick={() => {
-                setRegisterModal(true);
-              }}
-            >
-              Create new account
-            </Button>
-            <Button
-              variant="default"
-              color="blue"
-              size="md"
-              fullWidth
-              type="submit"
-              className="m-l-sm"
-            >
-              Login
-            </Button>
-          </div>
-        </form>
+      <RegisterForm setOpened={setOpened} />
+      <RetrieveForm />
+      {!registerForm ? (
+        <LoginForm
+          setOpened={setOpened}
+          setRegisterModal={setRegisterForm}
+          setRetrieveModal={setRetrieveForm}
+        />
       ) : (
-        <form onSubmit={registerForm.onSubmit((values) => handleRegistration())}>
-          <TextInput
-            placeholder="Username"
-            label="Username"
-            required
-            size="md"
-            className="m-v-md"
-            {...registerForm.getInputProps("username")}
-          />
-          <TextInput
-            placeholder="E-mail"
-            label="E-mail"
-            required
-            size="md"
-            className="m-v-md"
-            {...registerForm.getInputProps("email")}
-          />
-
-          <Group position="apart" grow>
-            <PasswordInput
-              placeholder="Password"
-              size="md"
-              label="Password"
-              required
-              ref={passwordRef}
-              {...registerForm.getInputProps("password")}
-            />
-
-            <PasswordInput
-              placeholder="Confirm password"
-              size="md"
-              label="Confirm password"
-              required
-              {...registerForm.getInputProps("confirmPassword")}
-            />
-          </Group>
-
-          <Checkbox
-            {...registerForm.getInputProps("termsOfService", { type: "checkbox" })}
-            label={
-              <Text className="flex">
-                I accept&nbsp;
-                <Link to="/legal">
-                  <Text variant="link">terms of service</Text>
-                </Link>
-              </Text>
-            }
-            className="m-t-lg"
-          />
-
-          <Button variant="light" color="blue" size="md" fullWidth type="submit" className="m-t-lg">
-            Register
-          </Button>
-        </form>
+        <RegisterForm setOpened={setOpened} />
       )}
     </Modal>
   );
