@@ -42,7 +42,8 @@ export const HeaderContent: React.FC = () => {
 
   return (
     <>
-      <Login opened={loginModal} setOpened={setLoginModal} />
+      {loginModal && <Login opened={loginModal} setOpened={setLoginModal} />}
+
       <header>
         <div className="app-logo">App</div>
 

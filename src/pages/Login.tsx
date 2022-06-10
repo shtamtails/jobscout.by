@@ -1,7 +1,7 @@
 import { Button, Checkbox, Group, Modal, PasswordInput, Text, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useModals } from "@mantine/modals";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../hooks/redux";
@@ -16,9 +16,14 @@ interface loginProps {
 }
 
 export const Login: React.FC<loginProps> = ({ opened, setOpened }) => {
-  const [loginForm, setLoginForm] = useState<boolean>(false);
+  const [loginForm, setLoginForm] = useState<boolean>(true);
   const [registerForm, setRegisterForm] = useState<boolean>(false);
   const [retrieveForm, setRetrieveForm] = useState<boolean>(false);
+
+  useEffect(() => {
+    setRegisterForm(false);
+    setRegisterForm(false);
+  }, []);
 
   return (
     <Modal
@@ -28,30 +33,16 @@ export const Login: React.FC<loginProps> = ({ opened, setOpened }) => {
       onClose={() => setOpened(false)}
       title="Login or create account"
     >
-      {loginForm && !registerForm && !retrieveForm && (
+      {loginForm && (
         <LoginForm
           setOpened={setOpened}
+          setLoginModal={setLoginForm}
           setRegisterModal={setRegisterForm}
           setRetrieveModal={setRetrieveForm}
         />
       )}
-      <LoginForm
-        setOpened={setOpened}
-        setRegisterModal={setRegisterForm}
-        setRetrieveModal={setRetrieveForm}
-      />
-
-      <RegisterForm setOpened={setOpened} />
-      <RetrieveForm />
-      {!registerForm ? (
-        <LoginForm
-          setOpened={setOpened}
-          setRegisterModal={setRegisterForm}
-          setRetrieveModal={setRetrieveForm}
-        />
-      ) : (
-        <RegisterForm setOpened={setOpened} />
-      )}
+      {registerForm && <RegisterForm setOpened={setOpened} />}
+      {retrieveForm && <RetrieveForm />}
     </Modal>
   );
 };

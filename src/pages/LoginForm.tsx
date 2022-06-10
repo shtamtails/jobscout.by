@@ -6,6 +6,7 @@ import { setAuthorization } from "../store/reducers/userReducer";
 
 interface LoginModalForm {
   setOpened: Function;
+  setLoginModal: Function;
   setRegisterModal: Function;
   setRetrieveModal: Function;
 }
@@ -14,6 +15,7 @@ export const LoginForm: React.FC<LoginModalForm> = ({
   setOpened,
   setRegisterModal,
   setRetrieveModal,
+  setLoginModal,
 }) => {
   const dispatch = useAppDispatch();
 
@@ -30,7 +32,7 @@ export const LoginForm: React.FC<LoginModalForm> = ({
   });
   const handleLogin = () => {
     // check from db
-
+    console.log("logined");
     dispatch(setAuthorization(true));
     setOpened(false);
   };
@@ -56,6 +58,7 @@ export const LoginForm: React.FC<LoginModalForm> = ({
       <Text
         variant="link"
         onClick={() => {
+          setLoginModal(false);
           setRetrieveModal(true);
         }}
       >
@@ -68,6 +71,7 @@ export const LoginForm: React.FC<LoginModalForm> = ({
           size="md"
           className="m-r-sm"
           onClick={() => {
+            setLoginModal(false);
             setRegisterModal(true);
           }}
         >

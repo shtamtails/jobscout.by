@@ -1,5 +1,5 @@
 import { useForm } from "@mantine/form";
-import React from "react";
+import React, { useEffect } from "react";
 import { useAppDispatch } from "../hooks/redux";
 import { setAuthorization } from "../store/reducers/userReducer";
 import { Button, Checkbox, Group, PasswordInput, Text, TextInput } from "@mantine/core";
@@ -35,7 +35,7 @@ export const RegisterForm: React.FC<RegisterModalForm> = ({ setOpened }) => {
 
   const handleRegistration = () => {
     // push to db
-
+    console.log("registered");
     dispatch(setAuthorization(true));
     setOpened(false);
   };
