@@ -3,7 +3,11 @@ import {
   Autocomplete,
   Avatar,
   Divider,
+  Indicator,
+  ListItem,
   Menu,
+  Popover,
+  Text,
   useMantineColorScheme,
 } from "@mantine/core";
 import React from "react";
@@ -21,15 +25,19 @@ import {
   Language,
   DoorExit,
   DoorEnter,
+  List,
 } from "tabler-icons-react";
 import { Login } from "./Login";
 import { removeUser, setAuthorization } from "../store/reducers/userReducer";
 import { getAuth, signOut } from "firebase/auth";
 
 export const HeaderContent: React.FC = () => {
-  const [loginModal, setLoginModal] = useState(false);
+  const [loginModal, setLoginModal] = useState<boolean>(false);
+  const [accountTooltip, setAccountTooltip] = useState<boolean>(false);
 
-  const { authorized, email, id, token } = useAppSelector((state) => state.user);
+  const { authorized, email, id, token, username, verified } = useAppSelector(
+    (state) => state.user
+  );
   const dispatch = useAppDispatch();
 
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
@@ -78,17 +86,52 @@ export const HeaderContent: React.FC = () => {
               </div>
             }
           >
+            {authorized &&
+              (username ? (
+                <Menu.Item disabled>Hello, {username}!</Menu.Item>
+              ) : (
+                <Menu.Item disabled>Hello, anonymous!</Menu.Item>
+              ))}
             <Menu.Label>Account</Menu.Label>
             {authorized ? (
               <>
-                <Menu.Item
-                  icon={<User size={18} />}
-                  onClick={() => {
-                    console.log(authorized, email, id, token);
-                  }}
+                <Popover
+                  opened={accountTooltip}
+                  onClose={() => setAccountTooltip(false)}
+                  position="bottom"
+                  placement="center"
+                  withArrow
+                  trapFocus={false}
+                  closeOnEscape={false}
+                  transition="pop-top-left"
+                  width={260}
+                  styles={{ body: { pointerEvents: "none" }, root: { width: "100%" } }}
+                  target={
+                    <Indicator
+                      position="middle-end"
+                      offset={12}
+                      color="red"
+                      onMouseEnter={() => setAccountTooltip(true)}
+                      onMouseLeave={() => setAccountTooltip(false)}
+                    >
+                      <Menu.Item icon={<User size={18} />}>Profile</Menu.Item>
+                    </Indicator>
+                  }
                 >
-                  Profile
-                </Menu.Item>
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    {!username && (
+                      <Text size="sm" color="red">
+                        Username is undefined
+                      </Text>
+                    )}
+                    {!verified && (
+                      <Text size="sm" color="red">
+                        Email is not verified
+                      </Text>
+                    )}
+                  </div>
+                </Popover>
+
                 <Menu.Item icon={<Settings size={18} />}>Settings</Menu.Item>
                 <Menu.Item icon={<Language size={18} />}>Language</Menu.Item>
                 <Divider />

@@ -5,6 +5,9 @@ export interface IUser {
   email: string | null;
   token: string | null;
   id: string | null;
+  verified?: boolean;
+  image?: string | null;
+  username?: string | null;
 }
 
 const initialState: IUser = {
@@ -12,6 +15,9 @@ const initialState: IUser = {
   email: null,
   token: null,
   id: null,
+  verified: false,
+  image: null,
+  username: null,
 };
 
 export const userReducer = createSlice({
@@ -26,12 +32,18 @@ export const userReducer = createSlice({
       state.email = action.payload.email;
       state.id = action.payload.id;
       state.token = action.payload.token;
+      state.verified = action.payload?.verified;
+      state.image = action.payload?.image;
+      state.username = action.payload?.username;
     },
     removeUser: (state: IUser) => {
       state.authorized = false;
       state.email = null;
       state.id = null;
       state.token = null;
+      state.verified = false;
+      state.image = null;
+      state.username = null;
     },
   },
 });

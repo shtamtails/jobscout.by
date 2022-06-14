@@ -22,7 +22,7 @@ interface RegisterModalForm {
 
 export const RegisterForm: React.FC<RegisterModalForm> = ({ setOpened }) => {
   const dispatch = useAppDispatch();
-  const [authLoading, setAuthLoading] = useState<boolean>(false);
+  const [authOverlay, setAuthOverlay] = useState<boolean>(false);
   const [emailError, setEmailError] = useState<string | null>(null);
 
   const registerForm = useForm({
@@ -31,7 +31,7 @@ export const RegisterForm: React.FC<RegisterModalForm> = ({ setOpened }) => {
       email: "",
       password: "",
       confirmPassword: "",
-      termsOfService: false,
+      termsOfService: true,
     },
 
     validate: {
@@ -45,7 +45,8 @@ export const RegisterForm: React.FC<RegisterModalForm> = ({ setOpened }) => {
   });
 
   const handleRegistration = () => {
-    setAuthLoading(true);
+    setEmailError(null);
+    setAuthOverlay(true);
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, registerForm.values.email, registerForm.values.password)
       .then(({ user }: UserCredential) => {
@@ -57,12 +58,12 @@ export const RegisterForm: React.FC<RegisterModalForm> = ({ setOpened }) => {
             token: user.refreshToken,
           })
         );
-        setAuthLoading(false);
+        setAuthOverlay(false);
         setOpened(false);
       })
 
       .catch((error: FirebaseError) => {
-        setAuthLoading(false);
+        setAuthOverlay(false);
         error.message === "Firebase: Error (auth/email-already-in-use)." &&
           setEmailError("Email is already registered");
       });
@@ -70,7 +71,7 @@ export const RegisterForm: React.FC<RegisterModalForm> = ({ setOpened }) => {
 
   return (
     <div style={{ position: "relative" }}>
-      <LoadingOverlay visible={authLoading} />
+      <LoadingOverlay visible={authOverlay} />
       <form onSubmit={registerForm.onSubmit((values) => handleRegistration())}>
         <TextInput
           placeholder="E-mail"

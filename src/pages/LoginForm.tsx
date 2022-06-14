@@ -1,9 +1,16 @@
-import { Button, PasswordInput, Text, TextInput } from "@mantine/core";
+import { Button, LoadingOverlay, PasswordInput, Text, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
 import { setAuthorization, setUser } from "../store/reducers/userReducer";
-import { getAuth, signInWithEmailAndPassword, UserCredential } from "firebase/auth";
+import {
+  browserLocalPersistence,
+  getAuth,
+  inMemoryPersistence,
+  setPersistence,
+  signInWithEmailAndPassword,
+  UserCredential,
+} from "firebase/auth";
 import { useState } from "react";
 import { FirebaseError } from "firebase/app";
 
@@ -21,9 +28,9 @@ export const LoginForm: React.FC<LoginModalForm> = ({
   setLoginModal,
 }) => {
   const dispatch = useAppDispatch();
-  const { email, id, token } = useAppSelector((state) => state.user);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [authOverlay, setAuthOverlay] = useState<boolean>(false);
   const loginForm = useForm({
     initialValues: {
       username: "",
@@ -39,76 +46,91 @@ export const LoginForm: React.FC<LoginModalForm> = ({
   const handleLogin = () => {
     setLoginError(null);
     setPasswordError(null);
-    // check from db
+    setAuthOverlay(true);
     const auth = getAuth();
-    signInWithEmailAndPassword(auth, loginForm.values.username, loginForm.values.password)
-      .then(({ user }: UserCredential) => {
-        dispatch(
-          setUser({
-            authorized: true,
-            email: user.email,
-            id: user.uid,
-            token: user.refreshToken,
-          })
-        );
-        setOpened(false);
-      })
-      .catch((error: FirebaseError) => {
-        error.message === "Firebase: Error (auth/invalid-email)." &&
-          setLoginError("Invalid email or username");
-        error.message === "Firebase: Error (auth/user-not-found)." &&
-          setLoginError("User not found");
-        error.message === "Firebase: Error (auth/wrong-password)." &&
-          setPasswordError("Invalid password");
-      });
+    setPersistence(auth, browserLocalPersistence).then(() => {
+      signInWithEmailAndPassword(auth, loginForm.values.username, loginForm.values.password)
+        .then(({ user }: UserCredential) => {
+          dispatch(
+            setUser({
+              authorized: true,
+              email: user.email,
+              id: user.uid,
+              token: user.refreshToken,
+            })
+          );
+          setAuthOverlay(false);
+          setOpened(false);
+        })
+        .catch((error: FirebaseError) => {
+          setAuthOverlay(false);
+
+          error.message === "Firebase: Error (auth/invalid-email)." &&
+            setLoginError("Invalid email or username");
+          error.message === "Firebase: Error (auth/user-not-found)." &&
+            setLoginError("User not found");
+          error.message === "Firebase: Error (auth/wrong-password)." &&
+            setPasswordError("Invalid password");
+        });
+    });
   };
   return (
-    <form onSubmit={loginForm.onSubmit((values) => handleLogin())}>
-      <TextInput
-        placeholder="Username"
-        label="Username"
-        required
-        size="md"
-        className="m-v-md"
-        error={loginError}
-        {...loginForm.getInputProps("username")}
-      />
-      <PasswordInput
-        placeholder="Password"
-        className="m-v-md"
-        size="md"
-        label="Password"
-        error={passwordError}
-        required
-        {...loginForm.getInputProps("password")}
-      />
-
-      <Text
-        variant="link"
-        onClick={() => {
-          setLoginModal(false);
-          setRetrieveModal(true);
-        }}
-      >
-        Forgot password?
-      </Text>
-      <div className="login-buttons">
-        <Button
-          variant="subtle"
-          fullWidth
+    <div style={{ position: "relative" }}>
+      <LoadingOverlay visible={authOverlay} />
+      <form onSubmit={loginForm.onSubmit((values) => handleLogin())}>
+        <TextInput
+          placeholder="Username"
+          label="Username"
+          required
           size="md"
-          className="m-r-sm"
+          className="m-v-md"
+          error={loginError}
+          {...loginForm.getInputProps("username")}
+        />
+        <PasswordInput
+          placeholder="Password"
+          className="m-v-md"
+          size="md"
+          label="Password"
+          error={passwordError}
+          required
+          {...loginForm.getInputProps("password")}
+        />
+
+        <Text
+          variant="link"
           onClick={() => {
             setLoginModal(false);
-            setRegisterModal(true);
+            setRetrieveModal(true);
           }}
         >
-          Create new account
-        </Button>
-        <Button variant="default" color="blue" size="md" fullWidth type="submit" className="m-l-sm">
-          Login
-        </Button>
-      </div>
-    </form>
+          Forgot password?
+        </Text>
+        <div className="login-buttons">
+          <Button
+            variant="subtle"
+            fullWidth
+            size="md"
+            className="m-r-sm"
+            onClick={() => {
+              setLoginModal(false);
+              setRegisterModal(true);
+            }}
+          >
+            Create new account
+          </Button>
+          <Button
+            variant="default"
+            color="blue"
+            size="md"
+            fullWidth
+            type="submit"
+            className="m-l-sm"
+          >
+            Login
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 };
