@@ -1,9 +1,10 @@
 import { useForm } from "@mantine/form";
-import React, { useEffect } from "react";
+import React from "react";
 import { useAppDispatch } from "../hooks/redux";
-import { setAuthorization } from "../store/reducers/userReducer";
+import { setAuthorization, setUser } from "../store/reducers/userReducer";
 import { Button, Checkbox, Group, PasswordInput, Text, TextInput } from "@mantine/core";
 import { Link } from "react-router-dom";
+import { createUserWithEmailAndPassword, getAuth, UserCredential } from "firebase/auth";
 
 interface RegisterModalForm {
   setOpened: Function;
@@ -35,6 +36,12 @@ export const RegisterForm: React.FC<RegisterModalForm> = ({ setOpened }) => {
 
   const handleRegistration = () => {
     // push to db
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, registerForm.values.email, registerForm.values.password)
+      .then(async ({ user }: UserCredential) => {
+        console.log(user);
+      })
+      .catch(console.error);
     console.log("registered");
     dispatch(setAuthorization(true));
     setOpened(false);

@@ -3,6 +3,7 @@ import { useForm } from "@mantine/form";
 import React from "react";
 import { useAppDispatch } from "../hooks/redux";
 import { setAuthorization } from "../store/reducers/userReducer";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 interface LoginModalForm {
   setOpened: Function;
@@ -26,12 +27,16 @@ export const LoginForm: React.FC<LoginModalForm> = ({
     },
 
     validate: {
-      username: (value) => (value === "admin" ? null : "Invalid username"),
-      password: (value) => (value === "root" ? null : "Invalid password"),
+      // username: (value) => (value === "admin" ? null : "Invalid username"),
+      // password: (value) => (value === "root" ? null : "Invalid password"),
     },
   });
   const handleLogin = () => {
     // check from db
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, loginForm.values.username, loginForm.values.password)
+      .then(console.log)
+      .catch(console.error);
     console.log("logined");
     dispatch(setAuthorization(true));
     setOpened(false);
