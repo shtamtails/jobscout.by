@@ -22,7 +22,7 @@ export const userReducer = createSlice({
       state.authorized = action.payload;
     },
     setUser: (state: IUser, action: PayloadAction<IUser>) => {
-      state.authorized = true;
+      state.authorized = action.payload.authorized;
       state.email = action.payload.email;
       state.id = action.payload.id;
       state.token = action.payload.token;

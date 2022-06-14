@@ -23,12 +23,13 @@ import {
   DoorEnter,
 } from "tabler-icons-react";
 import { Login } from "./Login";
-import { setAuthorization } from "../store/reducers/userReducer";
+import { removeUser, setAuthorization } from "../store/reducers/userReducer";
+import { getAuth, signOut } from "firebase/auth";
 
 export const HeaderContent: React.FC = () => {
   const [loginModal, setLoginModal] = useState(false);
 
-  const { authorized } = useAppSelector((state) => state.user);
+  const { authorized, email, id, token } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
 
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
@@ -80,14 +81,30 @@ export const HeaderContent: React.FC = () => {
             <Menu.Label>Account</Menu.Label>
             {authorized ? (
               <>
-                <Menu.Item icon={<User size={18} />}>Profile</Menu.Item>
+                <Menu.Item
+                  icon={<User size={18} />}
+                  onClick={() => {
+                    console.log(authorized, email, id, token);
+                  }}
+                >
+                  Profile
+                </Menu.Item>
                 <Menu.Item icon={<Settings size={18} />}>Settings</Menu.Item>
                 <Menu.Item icon={<Language size={18} />}>Language</Menu.Item>
                 <Divider />
                 <Menu.Item
                   color="red"
                   icon={<DoorExit size={18} />}
-                  onClick={() => dispatch(setAuthorization(false))}
+                  onClick={() => {
+                    const auth = getAuth();
+                    signOut(auth)
+                      .then(() => {
+                        dispatch(removeUser());
+                      })
+                      .catch((error) => {
+                        console.error(error);
+                      });
+                  }}
                 >
                   Log out
                 </Menu.Item>
