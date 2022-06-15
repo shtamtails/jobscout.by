@@ -19,6 +19,7 @@ interface LoginModalForm {
   setLoginModal: Function;
   setRegisterModal: Function;
   setRetrieveModal: Function;
+  setAuthOverlay: Function;
 }
 
 export const LoginForm: React.FC<LoginModalForm> = ({
@@ -26,11 +27,11 @@ export const LoginForm: React.FC<LoginModalForm> = ({
   setRegisterModal,
   setRetrieveModal,
   setLoginModal,
+  setAuthOverlay,
 }) => {
   const dispatch = useAppDispatch();
   const [loginError, setLoginError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
-  const [authOverlay, setAuthOverlay] = useState<boolean>(false);
   const loginForm = useForm({
     initialValues: {
       username: "",
@@ -75,62 +76,52 @@ export const LoginForm: React.FC<LoginModalForm> = ({
     });
   };
   return (
-    <div style={{ position: "relative" }}>
-      <LoadingOverlay visible={authOverlay} />
-      <form onSubmit={loginForm.onSubmit((values) => handleLogin())}>
-        <TextInput
-          placeholder="Username"
-          label="Username"
-          required
-          size="md"
-          className="m-v-md"
-          error={loginError}
-          {...loginForm.getInputProps("username")}
-        />
-        <PasswordInput
-          placeholder="Password"
-          className="m-v-md"
-          size="md"
-          label="Password"
-          error={passwordError}
-          required
-          {...loginForm.getInputProps("password")}
-        />
+    <form onSubmit={loginForm.onSubmit((values) => handleLogin())}>
+      <TextInput
+        placeholder="Username"
+        label="Username"
+        required
+        size="md"
+        className="m-v-md"
+        error={loginError}
+        {...loginForm.getInputProps("username")}
+      />
+      <PasswordInput
+        placeholder="Password"
+        className="m-v-md"
+        size="md"
+        label="Password"
+        error={passwordError}
+        required
+        {...loginForm.getInputProps("password")}
+      />
 
-        <Text
-          variant="link"
+      <Text
+        variant="link"
+        onClick={() => {
+          setLoginModal(false);
+          setRetrieveModal(true);
+        }}
+      >
+        Forgot password?
+      </Text>
+      <div className="login-buttons">
+        <Button
+          variant="subtle"
+          fullWidth
+          size="md"
+          className="m-r-sm"
           onClick={() => {
             setLoginModal(false);
-            setRetrieveModal(true);
+            setRegisterModal(true);
           }}
         >
-          Forgot password?
-        </Text>
-        <div className="login-buttons">
-          <Button
-            variant="subtle"
-            fullWidth
-            size="md"
-            className="m-r-sm"
-            onClick={() => {
-              setLoginModal(false);
-              setRegisterModal(true);
-            }}
-          >
-            Create new account
-          </Button>
-          <Button
-            variant="default"
-            color="blue"
-            size="md"
-            fullWidth
-            type="submit"
-            className="m-l-sm"
-          >
-            Login
-          </Button>
-        </div>
-      </form>
-    </div>
+          Create new account
+        </Button>
+        <Button variant="default" color="blue" size="md" fullWidth type="submit" className="m-l-sm">
+          Login
+        </Button>
+      </div>
+    </form>
   );
 };

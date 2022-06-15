@@ -30,6 +30,7 @@ import {
 import { Login } from "./Login";
 import { removeUser, setAuthorization } from "../store/reducers/userReducer";
 import { getAuth, signOut } from "firebase/auth";
+import { Link } from "react-router-dom";
 
 export const HeaderContent: React.FC = () => {
   const [loginModal, setLoginModal] = useState<boolean>(false);
@@ -114,14 +115,16 @@ export const HeaderContent: React.FC = () => {
                       onMouseEnter={() => setAccountTooltip(true)}
                       onMouseLeave={() => setAccountTooltip(false)}
                     >
-                      <Menu.Item icon={<User size={18} />}>Profile</Menu.Item>
+                      <Link to="/profile">
+                        <Menu.Item icon={<User size={18} />}>Profile</Menu.Item>
+                      </Link>
                     </Indicator>
                   }
                 >
                   <div style={{ display: "flex", flexDirection: "column" }}>
                     {!username && (
                       <Text size="sm" color="red">
-                        Username is undefined
+                        Username is not defined
                       </Text>
                     )}
                     {!verified && (
@@ -131,8 +134,9 @@ export const HeaderContent: React.FC = () => {
                     )}
                   </div>
                 </Popover>
-
-                <Menu.Item icon={<Settings size={18} />}>Settings</Menu.Item>
+                <Link to="/settings">
+                  <Menu.Item icon={<Settings size={18} />}>Settings</Menu.Item>
+                </Link>
                 <Menu.Item icon={<Language size={18} />}>Language</Menu.Item>
                 <Divider />
                 <Menu.Item

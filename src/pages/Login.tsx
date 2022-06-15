@@ -1,4 +1,13 @@
-import { Button, Checkbox, Group, Modal, PasswordInput, Text, TextInput } from "@mantine/core";
+import {
+  Button,
+  Checkbox,
+  Group,
+  Modal,
+  PasswordInput,
+  Text,
+  TextInput,
+  LoadingOverlay,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useModals } from "@mantine/modals";
 import React, { useEffect, useRef } from "react";
@@ -19,6 +28,7 @@ export const Login: React.FC<loginProps> = ({ opened, setOpened }) => {
   const [loginForm, setLoginForm] = useState<boolean>(true);
   const [registerForm, setRegisterForm] = useState<boolean>(false);
   const [retrieveForm, setRetrieveForm] = useState<boolean>(false);
+  const [authOverlay, setAuthOverlay] = useState<boolean>(false);
 
   useEffect(() => {
     setRegisterForm(false);
@@ -33,16 +43,20 @@ export const Login: React.FC<loginProps> = ({ opened, setOpened }) => {
       onClose={() => setOpened(false)}
       title="Login or create account"
     >
-      {loginForm && (
-        <LoginForm
-          setOpened={setOpened}
-          setLoginModal={setLoginForm}
-          setRegisterModal={setRegisterForm}
-          setRetrieveModal={setRetrieveForm}
-        />
-      )}
-      {registerForm && <RegisterForm setOpened={setOpened} />}
-      {retrieveForm && <RetrieveForm />}
+      <div style={{ position: "relative" }}>
+        <LoadingOverlay visible={authOverlay} />
+        {loginForm && (
+          <LoginForm
+            setOpened={setOpened}
+            setAuthOverlay={setAuthOverlay}
+            setLoginModal={setLoginForm}
+            setRegisterModal={setRegisterForm}
+            setRetrieveModal={setRetrieveForm}
+          />
+        )}
+        {registerForm && <RegisterForm setAuthOverlay={setAuthOverlay} setOpened={setOpened} />}
+        {retrieveForm && <RetrieveForm setAuthOverlay={setAuthOverlay} />}
+      </div>
     </Modal>
   );
 };

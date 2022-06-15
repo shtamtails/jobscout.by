@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   AppShell,
   ColorScheme,
@@ -11,11 +11,32 @@ import { Route, Routes } from "react-router-dom";
 import { Login } from "./pages/Login";
 import { HeaderContent } from "./pages/HeaderContent";
 import { ModalsProvider } from "@mantine/modals";
+import { getAuth, onAuthStateChanged, UserCredential } from "firebase/auth";
+import { useAppDispatch } from "./hooks/redux";
+import { removeUser, setUser } from "./store/reducers/userReducer";
 
 function App() {
   const [colorScheme, setColorScheme] = useState<ColorScheme>("dark");
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        dispatch(
+          setUser({
+            authorized: true,
+            email: user.email,
+            id: user.uid,
+            token: user.refreshToken,
+          })
+        );
+      } else {
+        dispatch(removeUser);
+      }
+    });
+  }, [dispatch]);
 
   return (
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>

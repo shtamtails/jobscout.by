@@ -18,11 +18,11 @@ import { FirebaseError } from "firebase/app";
 
 interface RegisterModalForm {
   setOpened: Function;
+  setAuthOverlay: Function;
 }
 
-export const RegisterForm: React.FC<RegisterModalForm> = ({ setOpened }) => {
+export const RegisterForm: React.FC<RegisterModalForm> = ({ setOpened, setAuthOverlay }) => {
   const dispatch = useAppDispatch();
-  const [authOverlay, setAuthOverlay] = useState<boolean>(false);
   const [emailError, setEmailError] = useState<string | null>(null);
 
   const registerForm = useForm({
@@ -70,54 +70,51 @@ export const RegisterForm: React.FC<RegisterModalForm> = ({ setOpened }) => {
   };
 
   return (
-    <div style={{ position: "relative" }}>
-      <LoadingOverlay visible={authOverlay} />
-      <form onSubmit={registerForm.onSubmit((values) => handleRegistration())}>
-        <TextInput
-          placeholder="E-mail"
-          label="E-mail"
-          required
+    <form onSubmit={registerForm.onSubmit((values) => handleRegistration())}>
+      <TextInput
+        placeholder="E-mail"
+        label="E-mail"
+        required
+        size="md"
+        className="m-v-md"
+        error={emailError}
+        {...registerForm.getInputProps("email")}
+      />
+
+      <Group position="apart" grow>
+        <PasswordInput
+          placeholder="Password"
           size="md"
-          className="m-v-md"
-          error={emailError}
-          {...registerForm.getInputProps("email")}
+          label="Password"
+          required
+          {...registerForm.getInputProps("password")}
         />
 
-        <Group position="apart" grow>
-          <PasswordInput
-            placeholder="Password"
-            size="md"
-            label="Password"
-            required
-            {...registerForm.getInputProps("password")}
-          />
-
-          <PasswordInput
-            placeholder="Confirm password"
-            size="md"
-            label="Confirm password"
-            required
-            {...registerForm.getInputProps("confirmPassword")}
-          />
-        </Group>
-
-        <Checkbox
-          {...registerForm.getInputProps("termsOfService", { type: "checkbox" })}
-          label={
-            <Text className="flex">
-              I accept&nbsp;
-              <Link to="/legal">
-                <Text variant="link">terms of service</Text>
-              </Link>
-            </Text>
-          }
-          className="m-t-lg"
+        <PasswordInput
+          placeholder="Confirm password"
+          size="md"
+          label="Confirm password"
+          required
+          {...registerForm.getInputProps("confirmPassword")}
         />
+      </Group>
 
-        <Button variant="light" color="blue" size="md" fullWidth type="submit" className="m-t-lg">
-          Register
-        </Button>
-      </form>
-    </div>
+      <Checkbox
+        {...registerForm.getInputProps("termsOfService", { type: "checkbox" })}
+        label={
+          <Text className="flex">
+            I accept&nbsp;
+            <Link to="/legal">
+              <Text variant="link">terms of service</Text>
+            </Link>
+          </Text>
+        }
+        className="m-t-lg"
+      />
+
+      <Button variant="light" color="blue" size="md" fullWidth type="submit" className="m-t-lg">
+        Register
+      </Button>
+    </form>
   );
 };
