@@ -14,6 +14,7 @@ import { ModalsProvider } from "@mantine/modals";
 import { getAuth, onAuthStateChanged, UserCredential } from "firebase/auth";
 import { useAppDispatch } from "./hooks/redux";
 import { removeUser, setUser } from "./store/reducers/userReducer";
+import { Settings } from "./pages/Settings";
 
 function App() {
   const [colorScheme, setColorScheme] = useState<ColorScheme>("dark");
@@ -30,6 +31,8 @@ function App() {
             email: user.email,
             id: user.uid,
             token: user.refreshToken,
+            verified: user.emailVerified,
+            username: user.displayName,
           })
         );
       } else {
@@ -61,7 +64,9 @@ function App() {
               },
             })}
           >
-            <Routes>{/* <Route path="login" element={<Login />} /> */}</Routes>
+            <Routes>
+              <Route path="Settings" element={<Settings />} />
+            </Routes>
           </AppShell>
         </ModalsProvider>
       </MantineProvider>

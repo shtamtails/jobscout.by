@@ -96,6 +96,8 @@ export const HeaderContent: React.FC = () => {
             <Menu.Label>Account</Menu.Label>
             {authorized ? (
               <>
+                <Menu.Item icon={<User size={18} />}>Profile</Menu.Item>
+
                 <Popover
                   opened={accountTooltip}
                   onClose={() => setAccountTooltip(false)}
@@ -115,8 +117,8 @@ export const HeaderContent: React.FC = () => {
                       onMouseEnter={() => setAccountTooltip(true)}
                       onMouseLeave={() => setAccountTooltip(false)}
                     >
-                      <Link to="/profile">
-                        <Menu.Item icon={<User size={18} />}>Profile</Menu.Item>
+                      <Link to="/settings">
+                        <Menu.Item icon={<Settings size={18} />}>Settings</Menu.Item>
                       </Link>
                     </Indicator>
                   }
@@ -134,9 +136,7 @@ export const HeaderContent: React.FC = () => {
                     )}
                   </div>
                 </Popover>
-                <Link to="/settings">
-                  <Menu.Item icon={<Settings size={18} />}>Settings</Menu.Item>
-                </Link>
+                <Link to="/settings"></Link>
                 <Menu.Item icon={<Language size={18} />}>Language</Menu.Item>
                 <Divider />
                 <Menu.Item

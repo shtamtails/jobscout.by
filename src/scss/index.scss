@@ -98,7 +98,79 @@ $spacing-map: (
   @include spacing-utility(padding);
 }
 
+.w100 {
+  width: 100% !important;
+}
+
+.mw100 {
+  min-width: 100% !important;
+}
+
+.h100 {
+  height: 100% !important;
+}
+
+.mh100 {
+  min-height: 100% !important;
+}
+
+.relative {
+  position: relative;
+}
+
+.dn {
+  display: none;
+}
+
 .flex {
   display: flex;
-  display: none;
+}
+
+.aic {
+  align-items: center;
+}
+
+.ais {
+  align-items: stretch;
+}
+
+.aife {
+  align-items: flex-end;
+}
+
+.aifs {
+  align-items: flex-start;
+}
+
+.jcc {
+  justify-content: center;
+}
+
+.jcfs {
+  justify-content: flex-start;
+}
+
+.jcfe {
+  justify-content: flex-end;
+}
+
+.jcsa {
+  justify-content: space-around;
+}
+
+.jcsb {
+  justify-content: space-between;
+}
+
+.jcse {
+  justify-content: space-evenly;
+}
+
+.jcs {
+  justify-content: stretch;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
 }
