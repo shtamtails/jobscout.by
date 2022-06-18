@@ -13,17 +13,57 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import React, { useState } from "react";
-import { Trash, User } from "tabler-icons-react";
+import { useAppDispatch, useAppSelector } from "../hooks/redux";
+import { setUser } from "../store/reducers/userReducer";
+import { getAdditionalUserInfo, getAuth, updateProfile } from "firebase/auth";
+import { Trash } from "tabler-icons-react";
 
 export const Settings: React.FC = ({}) => {
   const theme = useMantineTheme();
   const [dropdownModal, setDropdownModal] = useState<boolean>(false);
-
+  const dispatch = useAppDispatch();
+  const { authorized, email, token, id, verified, image, username } = useAppSelector(
+    (state) => state.user
+  );
   const secondaryColor = theme.colorScheme === "dark" ? theme.colors.dark[1] : theme.colors.gray[7];
+
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  const changeImage = () => {
+    if (user) {
+      updateProfile(user, {
+        photoURL:
+          "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=250&q=80",
+      })
+        .then(() => {
+          console.log("photo updated");
+          window.location.reload();
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  };
+
+  const removeImage = () => {
+    dispatch(
+      setUser({
+        authorized: authorized,
+        email: email,
+        token: token,
+        id: id,
+        verified: verified,
+        image: undefined,
+        username: username,
+      })
+    );
+  };
 
   return (
     <>
       <Modal
+        centered
         opened={dropdownModal}
         onClose={() => setDropdownModal(false)}
         title="Introduce yourself!"
@@ -38,13 +78,22 @@ export const Settings: React.FC = ({}) => {
               <div style={{ width: "500px" }}>
                 <Card shadow="sm" p="lg">
                   <div className="flex">
-                    <Avatar color="blue" size="xl" radius="xl">
-                      <User size={42} />
+                    <Avatar color="blue" size="xl" radius="xl" src={image}>
+                      {/* <Image src={image} /> */}
+                      {/* <User size={42} /> */}
                     </Avatar>
                     <div className="profile-avatar-settings p-h-md flex-column jcse">
                       <div className="flex">
-                        <Button size="xs">Update profile picture</Button>
-                        <ActionIcon styles={{ root: { marginLeft: "10px" } }}>
+                        <Button
+                          size="xs"
+                          onClick={() => {
+                            setDropdownModal(true);
+                            changeImage();
+                          }}
+                        >
+                          Update profile picture
+                        </Button>
+                        <ActionIcon styles={{ root: { marginLeft: "10px" } }} onClick={removeImage}>
                           <Trash />
                         </ActionIcon>
                       </div>

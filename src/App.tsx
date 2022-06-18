@@ -12,12 +12,13 @@ import { Login } from "./pages/Login";
 import { HeaderContent } from "./pages/HeaderContent";
 import { ModalsProvider } from "@mantine/modals";
 import { getAuth, onAuthStateChanged, UserCredential } from "firebase/auth";
-import { useAppDispatch } from "./hooks/redux";
+import { useAppDispatch, useAppSelector } from "./hooks/redux";
 import { removeUser, setUser } from "./store/reducers/userReducer";
 import { Settings } from "./pages/Settings";
 
 function App() {
   const [colorScheme, setColorScheme] = useState<ColorScheme>("dark");
+
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
   const dispatch = useAppDispatch();
@@ -33,6 +34,7 @@ function App() {
             token: user.refreshToken,
             verified: user.emailVerified,
             username: user.displayName,
+            image: user.photoURL,
           })
         );
       } else {

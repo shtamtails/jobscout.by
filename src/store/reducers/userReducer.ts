@@ -42,7 +42,7 @@ export const userReducer = createSlice({
       state.id = null;
       state.token = null;
       state.verified = false;
-      state.image = null;
+      state.image = undefined;
       state.username = null;
     },
   },
