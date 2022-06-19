@@ -60,6 +60,8 @@ export const RegisterForm: React.FC<RegisterModalForm> = ({ setOpened, setAuthOv
         );
         setAuthOverlay(false);
         setOpened(false);
+
+        window.location.reload();
       })
 
       .catch((error: FirebaseError) => {

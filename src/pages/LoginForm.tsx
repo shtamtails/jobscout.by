@@ -62,6 +62,7 @@ export const LoginForm: React.FC<LoginModalForm> = ({
           );
           setAuthOverlay(false);
           setOpened(false);
+          window.location.reload();
         })
         .catch((error: FirebaseError) => {
           setAuthOverlay(false);

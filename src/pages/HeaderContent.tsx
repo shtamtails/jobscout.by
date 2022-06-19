@@ -36,9 +36,10 @@ export const HeaderContent: React.FC = () => {
   const [loginModal, setLoginModal] = useState<boolean>(false);
   const [accountTooltip, setAccountTooltip] = useState<boolean>(false);
 
-  const { authorized, email, id, token, username, verified } = useAppSelector(
+  const { authorized, email, id, token, username, verified, image } = useAppSelector(
     (state) => state.user
   );
+
   const dispatch = useAppDispatch();
 
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
@@ -81,7 +82,7 @@ export const HeaderContent: React.FC = () => {
           <Menu
             control={
               <div className="header-action">
-                <Avatar color="blue" size="md" radius="xl">
+                <Avatar color="blue" size="md" radius="xl" src={image}>
                   <User size={26} />
                 </Avatar>
               </div>
@@ -147,6 +148,7 @@ export const HeaderContent: React.FC = () => {
                     signOut(auth)
                       .then(() => {
                         dispatch(removeUser());
+                        window.location.reload();
                       })
                       .catch((error) => {
                         console.error(error);
