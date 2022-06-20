@@ -142,37 +142,35 @@ export const SettingsGeneral: React.FC = () => {
     <>
       <Container size="lg" className="settings-main">
         <div className="m-t-md">
-          <div style={{ width: "100%" }}>
-            <h2>Profile Image</h2>
-            <Card shadow="sm" p="lg">
-              <div className="flex">
-                <Avatar color="blue" size="xl" radius="xl" src={image}>
-                  <User size={42} />
-                </Avatar>
-                <div className="profile-avatar-settings p-h-md flex-column jcse">
-                  <div className="flex aic">
-                    <Button
-                      loading={profilePictureButtonLoading}
-                      size="sm"
-                      variant="light"
-                      onClick={() => {
-                        setDropdownModal(true);
-                        changeImage();
-                      }}
-                    >
-                      {profilePictureButtonSuccess ? "Updated!" : "Update profile picture"}
-                    </Button>
-                    <ActionIcon styles={{ root: { marginLeft: "10px" } }} onClick={removeImage}>
-                      <Trash size={24} />
-                    </ActionIcon>
-                  </div>
-                  <Text size="sm" styles={{ root: { color: secondaryColor, lineHeight: 1.5 } }}>
-                    Must be PNG or JPEG and cannot exceed 5MB
-                  </Text>
+          <h2>Profile Image</h2>
+          <Card shadow="sm" p="lg">
+            <div className="flex">
+              <Avatar color="blue" size="xl" radius="xl" src={image}>
+                <User size={42} />
+              </Avatar>
+              <div className="profile-avatar-settings p-h-md flex-column jcse">
+                <div className="flex aic">
+                  <Button
+                    loading={profilePictureButtonLoading}
+                    size="sm"
+                    variant="light"
+                    onClick={() => {
+                      setDropdownModal(true);
+                      changeImage();
+                    }}
+                  >
+                    {profilePictureButtonSuccess ? "Updated!" : "Update profile picture"}
+                  </Button>
+                  <ActionIcon styles={{ root: { marginLeft: "10px" } }} onClick={removeImage}>
+                    <Trash size={24} />
+                  </ActionIcon>
                 </div>
+                <Text size="sm" styles={{ root: { color: secondaryColor, lineHeight: 1.5 } }}>
+                  Must be PNG or JPEG and cannot exceed 5MB
+                </Text>
               </div>
-            </Card>
-          </div>
+            </div>
+          </Card>
         </div>
         <h2>Profile Settings</h2>
         <Card
