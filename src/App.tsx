@@ -15,6 +15,7 @@ import { getAuth, onAuthStateChanged, UserCredential } from "firebase/auth";
 import { useAppDispatch, useAppSelector } from "./hooks/redux";
 import { removeUser, setUser } from "./store/reducers/userReducer";
 import { Settings } from "./pages/Settings";
+import { NotificationsProvider } from "@mantine/notifications";
 
 function App() {
   const [colorScheme, setColorScheme] = useState<ColorScheme>("dark");
@@ -47,29 +48,31 @@ function App() {
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
       <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
         <ModalsProvider>
-          <AppShell
-            padding="md"
-            navbar={
-              <Navbar width={{ base: 300 }} p="xs">
-                {/* Navbar content */}
-              </Navbar>
-            }
-            header={
-              <Header height={60}>
-                <HeaderContent />
-              </Header>
-            }
-            styles={(theme) => ({
-              main: {
-                backgroundColor:
-                  theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.colors.gray[0],
-              },
-            })}
-          >
-            <Routes>
-              <Route path="Settings" element={<Settings />} />
-            </Routes>
-          </AppShell>
+          <NotificationsProvider>
+            <AppShell
+              padding="md"
+              navbar={
+                <Navbar width={{ base: 300 }} p="xs">
+                  {/* Navbar content */}
+                </Navbar>
+              }
+              header={
+                <Header height={60}>
+                  <HeaderContent />
+                </Header>
+              }
+              styles={(theme) => ({
+                main: {
+                  backgroundColor:
+                    theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.colors.gray[0],
+                },
+              })}
+            >
+              <Routes>
+                <Route path="Settings" element={<Settings />} />
+              </Routes>
+            </AppShell>
+          </NotificationsProvider>
         </ModalsProvider>
       </MantineProvider>
     </ColorSchemeProvider>

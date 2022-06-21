@@ -2,7 +2,7 @@ import { Modal, PasswordInput, Button } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { EmailAuthProvider, getAuth, reauthenticateWithCredential } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface useReauthInterface {
   callback: Function | null;
@@ -48,7 +48,13 @@ export const ReauthModal: React.FC<useReauthInterface> = ({ callback, modal, set
 
   return (
     <>
-      <Modal centered opened={modal} onClose={() => setModal(false)} title="Confirm action">
+      <Modal
+        centered
+        opened={modal}
+        onClose={() => setModal(false)}
+        title="Confirm action"
+        zIndex={9999}
+      >
         <form
           onSubmit={currentPasswordForm.onSubmit((values) => {
             reAuthUser();

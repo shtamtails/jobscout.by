@@ -4,6 +4,7 @@ import {
   Container,
   Modal,
   PasswordInput,
+  Text,
   TextInput,
   useMantineTheme,
 } from "@mantine/core";
@@ -16,14 +17,16 @@ import {
   EmailAuthProvider,
   getAuth,
   reauthenticateWithCredential,
+  sendEmailVerification,
   updateEmail,
   updatePassword,
 } from "firebase/auth";
 import { LoginForm } from "./LoginForm";
-import { ToolsKitchenOff } from "tabler-icons-react";
+import { Mail, Send, ToolsKitchenOff } from "tabler-icons-react";
 import { FirebaseError } from "firebase/app";
 import { ReauthModal } from "../components/ReauthModal";
 import { useEffect } from "react";
+import { showNotification } from "@mantine/notifications";
 
 export const SettingsSecurity: React.FC = () => {
   const theme = useMantineTheme();
@@ -39,7 +42,7 @@ export const SettingsSecurity: React.FC = () => {
   });
 
   const [modal, setModal] = useState<boolean>(false);
-  const [callback, setCallback] = useState<Function | null>(null);
+  const [callback, setCallback] = useState<string | null>(null);
 
   const [passowrdButtonLoading, setPasswordButtonLoading] = useState<boolean>(false);
   const [passowrdButtonSuccess, setPasswordButtonSuccess] = useState<boolean>(false);
@@ -65,15 +68,6 @@ export const SettingsSecurity: React.FC = () => {
     }),
   });
 
-  const currentPasswordForm = useForm({
-    initialValues: {
-      password: "",
-    },
-    validate: {
-      password: (value) => (value.length < 6 ? "Password should be atleast 6 symbols long" : null),
-    },
-  });
-
   const changeEmailForm = useForm({
     initialValues: {
       newEmail: "",
@@ -90,16 +84,12 @@ export const SettingsSecurity: React.FC = () => {
     }),
   });
 
-  const createReauthModal = (callback: Function) => {
-    setCallback(callback);
-    setModal(true);
-  };
-
   const changePassword = () => {
     setPasswordButtonLoading(true);
     if (user) {
       updatePassword(user, changePasswordForm.values.password)
         .then(() => {
+          console.log("password changed");
           setPasswordButtonLoading(false);
           setPasswordButtonSuccess(true);
           setTimeout(() => {
@@ -107,8 +97,8 @@ export const SettingsSecurity: React.FC = () => {
           }, 5000);
         })
         .catch((error: FirebaseError) => {
-          error.code === "Reauth" && createReauthModal(changeEmail);
-          console.log(error.message);
+          error.code === "auth/requires-recent-login" && setCallback("password");
+          setModal(true);
           console.log(error.code);
         });
     }
@@ -127,11 +117,41 @@ export const SettingsSecurity: React.FC = () => {
           setEmail(changeEmailForm.values.newEmail);
         })
         .catch((error: FirebaseError) => {
-          error.code === "Reauth" && createReauthModal(changeEmail);
-          console.log(error.message);
+          error.code === "auth/requires-recent-login" && setCallback("email");
+          setModal(true);
           console.log(error.code);
         });
     }
+  };
+
+  const sendVerificationEmail = () => {
+    if (user) {
+      sendEmailVerification(user).then(() => {
+        showNotification({
+          title: "Email verification",
+          message: "Verification message was sent. Please, check your inbox.",
+          icon: <Send size={16} />,
+          radius: "md",
+          sx: {
+            backgroundColor:
+              theme.colorScheme === "dark" ? theme.colors.dark[5] : theme.colors.gray[8],
+          },
+        });
+      });
+    }
+  };
+
+  const emailVerified = () => {
+    showNotification({
+      title: "Email verification",
+      color: "green",
+      message: "Your email adress is successfully verified!",
+      icon: <Mail size={16} />,
+      radius: "md",
+      sx: {
+        backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[5] : theme.colors.gray[8],
+      },
+    });
   };
 
   return (
@@ -169,7 +189,7 @@ export const SettingsSecurity: React.FC = () => {
                   type="submit"
                   variant={theme.colorScheme === "dark" ? "light" : "filled"}
                 >
-                  {passowrdButtonSuccess ? "Updated!" : "Update"}
+                  {passowrdButtonLoading ? "" : passowrdButtonSuccess ? "Updated!" : "Update"}
                 </Button>
               </div>
             </SettingFooter>
@@ -186,6 +206,22 @@ export const SettingsSecurity: React.FC = () => {
               changeEmail();
             })}
           >
+            {!user?.emailVerified && (
+              <SettingContainer>
+                <div className="flex aic">
+                  <Button
+                    variant={theme.colorScheme === "dark" ? "light" : "filled"}
+                    onClick={sendVerificationEmail}
+                  >
+                    Verify Email
+                  </Button>
+                  <Text pl="sm">
+                    You have to verify your email address to access certain features
+                  </Text>
+                </div>
+              </SettingContainer>
+            )}
+
             <SettingContainer>
               <TextInput label="Current email" disabled type="email" value={email} />
             </SettingContainer>
@@ -199,14 +235,19 @@ export const SettingsSecurity: React.FC = () => {
                   loading={emailButtonLoading}
                   variant={theme.colorScheme === "dark" ? "light" : "filled"}
                 >
-                  {emailButtonSuccess ? "Updated!" : "Update"}
+                  {emailButtonLoading ? "" : emailButtonSuccess ? "Updated!" : "Update"}
                 </Button>
               </div>
             </SettingFooter>
           </form>
         </Card>
       </Container>
-      <ReauthModal callback={callback} modal={modal} setModal={setModal} />
+      {callback === "password" && (
+        <ReauthModal callback={changePassword} modal={modal} setModal={setModal} />
+      )}
+      {callback === "email" && (
+        <ReauthModal callback={changeEmail} modal={modal} setModal={setModal} />
+      )}
     </>
   );
 };
