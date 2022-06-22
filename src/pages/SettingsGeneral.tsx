@@ -24,7 +24,7 @@ import { useForm } from "@mantine/form";
 import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { dropzoneChildren } from "../components/DropzoneSettings";
 
-import { firebaseUpload } from "../hooks/firebase";
+import { firebaseDelete, firebaseUpload } from "../hooks/firebase";
 
 export const SettingsGeneral: React.FC = () => {
   const [dropdownModal, setDropdownModal] = useState<boolean>(false);
@@ -86,6 +86,7 @@ export const SettingsGeneral: React.FC = () => {
         photoURL: "",
       })
         .then(() => {
+          firebaseDelete(`profilePhotos/${user?.uid}_avatar`);
           dispatch(
             setUser({
               authorized: authorized,

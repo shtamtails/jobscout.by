@@ -1,4 +1,10 @@
-import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
+import {
+  deleteObject,
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
 import { app } from "../firebase";
 import { FirebaseError } from "firebase/app";
 
@@ -14,7 +20,6 @@ export const firebaseUpload = (
   const storage = getStorage(app);
   const storageRef = ref(storage, path);
   const metadata = metaData;
-
   const uploadTask = uploadBytesResumable(storageRef, file, metadata);
 
   uploadTask.on(
@@ -39,4 +44,17 @@ export const firebaseUpload = (
       });
     }
   );
+};
+
+export const firebaseDelete = (path: string) => {
+  const storage = getStorage();
+  const fileRef = ref(storage, path);
+
+  deleteObject(fileRef)
+    .then(() => {
+      console.log("file deleted");
+    })
+    .catch((error: FirebaseError) => {
+      console.error(error);
+    });
 };
