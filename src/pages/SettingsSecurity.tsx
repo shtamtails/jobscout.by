@@ -141,19 +141,6 @@ export const SettingsSecurity: React.FC = () => {
     }
   };
 
-  const emailVerified = () => {
-    showNotification({
-      title: "Email verification",
-      color: "green",
-      message: "Your email adress is successfully verified!",
-      icon: <Mail size={16} />,
-      radius: "md",
-      sx: {
-        backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[5] : theme.colors.gray[8],
-      },
-    });
-  };
-
   return (
     <>
       <Container size="lg" className="settings-main">

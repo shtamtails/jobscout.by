@@ -8,6 +8,8 @@ import {
   Modal,
   useMantineTheme,
   Box,
+  MantineTheme,
+  Group,
 } from "@mantine/core";
 import React from "react";
 import { User, Trash } from "tabler-icons-react";
@@ -19,6 +21,10 @@ import { Container } from "@mantine/core";
 import { SettingFooter } from "../components/SettingFooter";
 import { SettingContainer } from "../components/SettingContainer";
 import { useForm } from "@mantine/form";
+import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import { dropzoneChildren } from "../components/DropzoneSettings";
+
+import { firebaseUpload } from "../hooks/firebase";
 
 export const SettingsGeneral: React.FC = () => {
   const [dropdownModal, setDropdownModal] = useState<boolean>(false);
@@ -29,7 +35,7 @@ export const SettingsGeneral: React.FC = () => {
   const [profileSettingsButtonLoading, setProfileSettingsButtonLoading] = useState<boolean>(false);
   const [profileSettingsButtonSuccess, setProfileSettingsButtonSuccess] = useState<boolean>(false);
 
-  const { authorized, email, token, id, verified, image, username } = useAppSelector(
+  const { authorized, email, id, verified, image, username } = useAppSelector(
     (state) => state.user
   );
 
@@ -37,12 +43,19 @@ export const SettingsGeneral: React.FC = () => {
   const auth = getAuth();
   const user = auth.currentUser;
 
-  const changeImage = () => {
+  const uploadImage = (file: File) => {
+    const metadata = {
+      contentType: `image/jpeg` || `image/jpg` || `image/png`,
+    };
+    firebaseUpload(file, `profilePhotos/${user?.uid}_avatar`, metadata, changeImage);
+  };
+
+  const changeImage = (imageURL: string) => {
+    setDropdownModal(false);
     setProfilePictureButtonLoading(true);
     if (user) {
       updateProfile(user, {
-        photoURL:
-          "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=250&q=80",
+        photoURL: `${imageURL}`,
       })
         .then(() => {
           setProfilePictureButtonLoading(false);
@@ -51,11 +64,9 @@ export const SettingsGeneral: React.FC = () => {
             setUser({
               authorized: authorized,
               email: email,
-              token: token,
               id: id,
               verified: verified,
-              image:
-                "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=250&q=80",
+              image: user.photoURL,
               username: username,
             })
           );
@@ -79,7 +90,6 @@ export const SettingsGeneral: React.FC = () => {
             setUser({
               authorized: authorized,
               email: email,
-              token: token,
               id: id,
               verified: verified,
               image: null,
@@ -94,7 +104,7 @@ export const SettingsGeneral: React.FC = () => {
   };
   const usernameForm = useForm({
     initialValues: {
-      username: "",
+      username: ``,
     },
     validate: {
       username: (value) =>
@@ -116,7 +126,6 @@ export const SettingsGeneral: React.FC = () => {
             setUser({
               authorized: authorized,
               email: email,
-              token: token,
               id: id,
               verified: verified,
               image: image,
@@ -156,7 +165,6 @@ export const SettingsGeneral: React.FC = () => {
                     variant="light"
                     onClick={() => {
                       setDropdownModal(true);
-                      changeImage();
                     }}
                   >
                     {profilePictureButtonSuccess ? "Updated!" : "Update profile picture"}
@@ -186,8 +194,8 @@ export const SettingsGeneral: React.FC = () => {
             <SettingContainer>
               <TextInput
                 className="m-v-sm"
-                placeholder={username ? username : "Username"}
                 label="Username"
+                placeholder={username ? username : ""}
                 size="md"
                 description="Minimum 4 characters long and should not contain any special symbols"
                 {...usernameForm.getInputProps("username")}
@@ -212,12 +220,21 @@ export const SettingsGeneral: React.FC = () => {
       </Container>
 
       <Modal
+        size="xl"
         centered
         opened={dropdownModal}
         onClose={() => setDropdownModal(false)}
-        title="Introduce yourself!"
+        title="Upload an image"
       >
-        Dropszone
+        <Dropzone
+          multiple={false}
+          onDrop={(files) => uploadImage(files[0])}
+          onReject={(files) => console.log("rejected files", files)}
+          maxSize={3 * 1024 ** 2}
+          accept={IMAGE_MIME_TYPE}
+        >
+          {(status) => dropzoneChildren(status, theme)}
+        </Dropzone>
       </Modal>
     </>
   );

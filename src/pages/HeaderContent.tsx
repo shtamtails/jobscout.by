@@ -36,7 +36,7 @@ export const HeaderContent: React.FC = () => {
   const [loginModal, setLoginModal] = useState<boolean>(false);
   const [accountTooltip, setAccountTooltip] = useState<boolean>(false);
 
-  const { authorized, email, id, token, username, verified, image } = useAppSelector(
+  const { authorized, email, id, username, verified, image } = useAppSelector(
     (state) => state.user
   );
 

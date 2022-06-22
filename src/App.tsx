@@ -32,7 +32,6 @@ function App() {
             authorized: true,
             email: user.email,
             id: user.uid,
-            token: user.refreshToken,
             verified: user.emailVerified,
             username: user.displayName,
             image: user.photoURL,

@@ -55,7 +55,9 @@ export const RegisterForm: React.FC<RegisterModalForm> = ({ setOpened, setAuthOv
             authorized: true,
             email: user.email,
             id: user.uid,
-            token: user.refreshToken,
+            verified: user.emailVerified,
+            image: user.photoURL,
+            username: user.displayName,
           })
         );
         setAuthOverlay(false);

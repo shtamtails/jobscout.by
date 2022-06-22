@@ -39,7 +39,6 @@ export const LoginForm: React.FC<LoginModalForm> = ({
     },
 
     validate: {
-      // username: (value) => (value === "admin" ? null : "Invalid username"),
       password: (value) =>
         value.length < 6 ? "Password length should be longer than 6 symbols" : null,
     },
@@ -57,7 +56,9 @@ export const LoginForm: React.FC<LoginModalForm> = ({
               authorized: true,
               email: user.email,
               id: user.uid,
-              token: user.refreshToken,
+              verified: user.emailVerified,
+              image: user.photoURL,
+              username: user.displayName,
             })
           );
           setAuthOverlay(false);

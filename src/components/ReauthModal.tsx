@@ -48,13 +48,7 @@ export const ReauthModal: React.FC<useReauthInterface> = ({ callback, modal, set
 
   return (
     <>
-      <Modal
-        centered
-        opened={modal}
-        onClose={() => setModal(false)}
-        title="Confirm action"
-        zIndex={9999}
-      >
+      <Modal centered opened={modal} onClose={() => setModal(false)} title="Confirm action">
         <form
           onSubmit={currentPasswordForm.onSubmit((values) => {
             reAuthUser();

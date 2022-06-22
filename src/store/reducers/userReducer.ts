@@ -3,7 +3,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface IUser {
   authorized: boolean;
   email: string | null;
-  token: string | null;
   id: string | null;
   verified?: boolean;
   image?: string | null;
@@ -13,7 +12,6 @@ export interface IUser {
 const initialState: IUser = {
   authorized: false,
   email: null,
-  token: null,
   id: null,
   verified: false,
   image: null,
@@ -31,7 +29,6 @@ export const userReducer = createSlice({
       state.authorized = action.payload.authorized;
       state.email = action.payload.email;
       state.id = action.payload.id;
-      state.token = action.payload.token;
       state.verified = action.payload?.verified;
       state.image = action.payload?.image;
       state.username = action.payload?.username;
@@ -40,7 +37,6 @@ export const userReducer = createSlice({
       state.authorized = false;
       state.email = null;
       state.id = null;
-      state.token = null;
       state.verified = false;
       state.image = undefined;
       state.username = null;

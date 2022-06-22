@@ -2,6 +2,8 @@ import { Container, Tabs, Title } from "@mantine/core";
 import React from "react";
 import { SettingsGeneral } from "./SettingsGeneral";
 import { SettingsSecurity } from "./SettingsSecurity";
+import { SettingsInterface } from "./SettingsInterface";
+import { SettingsNotifications } from "./SettingsNotifications";
 
 export const Settings: React.FC = ({}) => {
   return (
@@ -15,8 +17,12 @@ export const Settings: React.FC = ({}) => {
           <Tabs.Tab label="Security and Privacy">
             <SettingsSecurity />
           </Tabs.Tab>
-          <Tabs.Tab label="Interface">Interface</Tabs.Tab>
-          <Tabs.Tab label="Notifications">Notifications</Tabs.Tab>
+          <Tabs.Tab label="Interface">
+            <SettingsInterface />
+          </Tabs.Tab>
+          <Tabs.Tab label="Notifications">
+            <SettingsNotifications />
+          </Tabs.Tab>
           <Tabs.Tab label="Other">Other</Tabs.Tab>
         </Tabs>
       </Container>
