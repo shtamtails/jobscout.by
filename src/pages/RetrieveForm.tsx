@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "@mantine/form";
-import { Button, LoadingOverlay, Text, TextInput } from "@mantine/core";
+import { Button, Text, TextInput } from "@mantine/core";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 
 interface RetrieveModalForm {

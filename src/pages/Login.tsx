@@ -1,20 +1,6 @@
-import {
-  Button,
-  Checkbox,
-  Group,
-  Modal,
-  PasswordInput,
-  Text,
-  TextInput,
-  LoadingOverlay,
-} from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { useModals } from "@mantine/modals";
-import React, { useEffect, useRef } from "react";
+import { Modal, LoadingOverlay } from "@mantine/core";
+import React, { useEffect } from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useAppSelector, useAppDispatch } from "../hooks/redux";
-import { setAuthorization } from "../store/reducers/userReducer";
 import { LoginForm } from "./LoginForm";
 import { RegisterForm } from "./RegisterForm";
 import { RetrieveForm } from "./RetrieveForm";

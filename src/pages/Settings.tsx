@@ -5,7 +5,7 @@ import { SettingsSecurity } from "./SettingsSecurity";
 import { SettingsInterface } from "./SettingsInterface";
 import { SettingsNotifications } from "./SettingsNotifications";
 
-export const Settings: React.FC = ({}) => {
+export const Settings: React.FC = () => {
   return (
     <>
       <Container className="settings">

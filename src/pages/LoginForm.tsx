@@ -1,12 +1,11 @@
-import { Button, LoadingOverlay, PasswordInput, Text, TextInput } from "@mantine/core";
+import { Button, PasswordInput, Text, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import React from "react";
-import { useAppDispatch, useAppSelector } from "../hooks/redux";
-import { setAuthorization, setUser } from "../store/reducers/userReducer";
+import { useAppDispatch } from "../hooks/redux";
+import { setUser } from "../store/reducers/userReducer";
 import {
   browserLocalPersistence,
   getAuth,
-  inMemoryPersistence,
   setPersistence,
   signInWithEmailAndPassword,
   UserCredential,

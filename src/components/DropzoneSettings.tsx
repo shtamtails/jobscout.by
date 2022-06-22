@@ -33,10 +33,10 @@ export const dropzoneChildren = (status: DropzoneStatus, theme: MantineTheme) =>
 
     <div>
       <Text size="xl" inline>
-        Drag images here or click to select files
+        Drag image here or click to select file
       </Text>
       <Text size="sm" color="dimmed" inline mt={7}>
-        Attach as many files as you like, each file should not exceed 5mb
+        Attach one file, file should not exceed 5mb
       </Text>
     </div>
   </Group>

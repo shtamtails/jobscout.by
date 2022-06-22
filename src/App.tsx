@@ -8,11 +8,10 @@ import {
   Navbar,
 } from "@mantine/core";
 import { Route, Routes } from "react-router-dom";
-import { Login } from "./pages/Login";
 import { HeaderContent } from "./pages/HeaderContent";
 import { ModalsProvider } from "@mantine/modals";
-import { getAuth, onAuthStateChanged, UserCredential } from "firebase/auth";
-import { useAppDispatch, useAppSelector } from "./hooks/redux";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useAppDispatch } from "./hooks/redux";
 import { removeUser, setUser } from "./store/reducers/userReducer";
 import { Settings } from "./pages/Settings";
 import { NotificationsProvider } from "@mantine/notifications";

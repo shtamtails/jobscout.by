@@ -1,32 +1,15 @@
-import {
-  Button,
-  Card,
-  Container,
-  Modal,
-  PasswordInput,
-  Text,
-  TextInput,
-  useMantineTheme,
-} from "@mantine/core";
+import { Button, Container, PasswordInput, Text, TextInput, useMantineTheme } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import React, { useState } from "react";
-import { SettingContainer } from "../components/SettingContainer";
+import { SettingSection } from "../components/SettingSection";
 import { SettingFooter } from "../components/SettingFooter";
-import {
-  EmailAuthCredential,
-  EmailAuthProvider,
-  getAuth,
-  reauthenticateWithCredential,
-  sendEmailVerification,
-  updateEmail,
-  updatePassword,
-} from "firebase/auth";
-import { LoginForm } from "./LoginForm";
-import { Mail, Send, ToolsKitchenOff } from "tabler-icons-react";
+import { getAuth, sendEmailVerification, updateEmail, updatePassword } from "firebase/auth";
+import { Send } from "tabler-icons-react";
 import { FirebaseError } from "firebase/app";
 import { ReauthModal } from "../components/ReauthModal";
 import { useEffect } from "react";
 import { showNotification } from "@mantine/notifications";
+import { SettingContainer } from "../components/SettingContainer";
 
 export const SettingsSecurity: React.FC = () => {
   const theme = useMantineTheme();
@@ -39,7 +22,7 @@ export const SettingsSecurity: React.FC = () => {
     if (user?.email) {
       setEmail(user.email);
     }
-  });
+  }, [user?.email]);
 
   const [modal, setModal] = useState<boolean>(false);
   const [callback, setCallback] = useState<string | null>(null);
@@ -145,29 +128,25 @@ export const SettingsSecurity: React.FC = () => {
     <>
       <Container size="lg" className="settings-main">
         <h2>Password</h2>
-        <Card
-          styles={{
-            root: { padding: "0 !important", border: `1px solid ${theme.colors.dark[5]}` },
-          }}
-        >
+        <SettingContainer>
           <form
             onSubmit={changePasswordForm.onSubmit((values) => {
               changePassword();
             })}
           >
-            <SettingContainer>
+            <SettingSection>
               <PasswordInput
                 label="New password"
                 description="Minimum 6 characters including letters and numbers"
                 {...changePasswordForm.getInputProps("password")}
               />
-            </SettingContainer>
-            <SettingContainer>
+            </SettingSection>
+            <SettingSection>
               <PasswordInput
                 label="Confirm new password"
                 {...changePasswordForm.getInputProps("confirmPassword")}
               />
-            </SettingContainer>
+            </SettingSection>
             <SettingFooter>
               <div className="flex jcfe">
                 <Button
@@ -181,20 +160,17 @@ export const SettingsSecurity: React.FC = () => {
               </div>
             </SettingFooter>
           </form>
-        </Card>
+        </SettingContainer>
+
         <h2>Email and verification</h2>
-        <Card
-          styles={{
-            root: { padding: "0 !important", border: `1px solid ${theme.colors.dark[5]}` },
-          }}
-        >
+        <SettingContainer>
           <form
             onSubmit={changeEmailForm.onSubmit((values) => {
               changeEmail();
             })}
           >
             {!user?.emailVerified && (
-              <SettingContainer>
+              <SettingSection>
                 <div className="flex aic">
                   <Button
                     variant={theme.colorScheme === "dark" ? "light" : "filled"}
@@ -206,15 +182,15 @@ export const SettingsSecurity: React.FC = () => {
                     You have to verify your email address to access certain features
                   </Text>
                 </div>
-              </SettingContainer>
+              </SettingSection>
             )}
 
-            <SettingContainer>
+            <SettingSection>
               <TextInput label="Current email" disabled type="email" value={email} />
-            </SettingContainer>
-            <SettingContainer>
+            </SettingSection>
+            <SettingSection>
               <TextInput label="New Email" {...changeEmailForm.getInputProps("newEmail")} />
-            </SettingContainer>
+            </SettingSection>
             <SettingFooter>
               <div className="flex jcfe">
                 <Button
@@ -227,7 +203,7 @@ export const SettingsSecurity: React.FC = () => {
               </div>
             </SettingFooter>
           </form>
-        </Card>
+        </SettingContainer>
       </Container>
       {callback === "password" && (
         <ReauthModal callback={changePassword} modal={modal} setModal={setModal} />

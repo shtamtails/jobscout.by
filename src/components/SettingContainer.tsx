@@ -1,6 +1,6 @@
-import { Box } from "@mantine/core";
 import React from "react";
 import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
+import { Card } from "@mantine/core";
 
 interface SettingsContainer {
   children: ReactJSXElement;
@@ -8,15 +8,14 @@ interface SettingsContainer {
 
 export const SettingContainer: React.FC<SettingsContainer> = ({ children }) => {
   return (
-    <Box
-      sx={(theme) => ({
-        padding: "16px",
-        backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[7] : "#FFFFFF",
-        minWidth: "100%",
-        borderBottom: `1px solid ${theme.colors.dark[5]}`,
-      })}
+    <Card
+      styles={{
+        root: {
+          padding: `0 !important`,
+        },
+      }}
     >
       {children}
-    </Box>
+    </Card>
   );
 };

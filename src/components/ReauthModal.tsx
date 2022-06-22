@@ -2,7 +2,7 @@ import { Modal, PasswordInput, Button } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { EmailAuthProvider, getAuth, reauthenticateWithCredential } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 interface useReauthInterface {
   callback: Function | null;

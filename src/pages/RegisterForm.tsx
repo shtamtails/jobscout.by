@@ -1,16 +1,8 @@
 import { useForm } from "@mantine/form";
 import React from "react";
-import { useAppDispatch, useAppSelector } from "../hooks/redux";
-import { setAuthorization, setUser } from "../store/reducers/userReducer";
-import {
-  Button,
-  Checkbox,
-  Group,
-  LoadingOverlay,
-  PasswordInput,
-  Text,
-  TextInput,
-} from "@mantine/core";
+import { useAppDispatch } from "../hooks/redux";
+import { setUser } from "../store/reducers/userReducer";
+import { Button, Checkbox, Group, PasswordInput, Text, TextInput } from "@mantine/core";
 import { Link } from "react-router-dom";
 import { createUserWithEmailAndPassword, getAuth, UserCredential } from "firebase/auth";
 import { useState } from "react";

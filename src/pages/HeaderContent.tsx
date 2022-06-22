@@ -4,7 +4,6 @@ import {
   Avatar,
   Divider,
   Indicator,
-  ListItem,
   Menu,
   Popover,
   Text,
@@ -18,17 +17,13 @@ import {
   MoonStars,
   User,
   Settings,
-  MessageCircle,
-  Photo,
   Search,
-  Trash,
   Language,
   DoorExit,
   DoorEnter,
-  List,
 } from "tabler-icons-react";
 import { Login } from "./Login";
-import { removeUser, setAuthorization } from "../store/reducers/userReducer";
+import { removeUser } from "../store/reducers/userReducer";
 import { getAuth, signOut } from "firebase/auth";
 import { Link } from "react-router-dom";
 
@@ -36,9 +31,7 @@ export const HeaderContent: React.FC = () => {
   const [loginModal, setLoginModal] = useState<boolean>(false);
   const [accountTooltip, setAccountTooltip] = useState<boolean>(false);
 
-  const { authorized, email, id, username, verified, image } = useAppSelector(
-    (state) => state.user
-  );
+  const { authorized, username, verified, image } = useAppSelector((state) => state.user);
 
   const dispatch = useAppDispatch();
 

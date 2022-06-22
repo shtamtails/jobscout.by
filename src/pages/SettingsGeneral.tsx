@@ -7,24 +7,22 @@ import {
   Text,
   Modal,
   useMantineTheme,
-  Box,
-  MantineTheme,
-  Group,
 } from "@mantine/core";
 import React from "react";
 import { User, Trash } from "tabler-icons-react";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
 import { getAuth, updateProfile } from "firebase/auth";
 import { setUser } from "../store/reducers/userReducer";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Container } from "@mantine/core";
 import { SettingFooter } from "../components/SettingFooter";
-import { SettingContainer } from "../components/SettingContainer";
+import { SettingSection } from "../components/SettingSection";
 import { useForm } from "@mantine/form";
-import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { dropzoneChildren } from "../components/DropzoneSettings";
 
 import { firebaseDelete, firebaseUpload } from "../hooks/firebase";
+import { SettingContainer } from "../components/SettingContainer";
 
 export const SettingsGeneral: React.FC = () => {
   const [dropdownModal, setDropdownModal] = useState<boolean>(false);
@@ -182,17 +180,13 @@ export const SettingsGeneral: React.FC = () => {
           </Card>
         </div>
         <h2>Profile Settings</h2>
-        <Card
-          styles={{
-            root: { padding: "0 !important", border: `1px solid ${theme.colors.dark[5]}` },
-          }}
-        >
+        <SettingContainer>
           <form
             onSubmit={usernameForm.onSubmit((values) => {
               changeUsername();
             })}
           >
-            <SettingContainer>
+            <SettingSection>
               <TextInput
                 className="m-v-sm"
                 label="Username"
@@ -201,7 +195,7 @@ export const SettingsGeneral: React.FC = () => {
                 description="Minimum 4 characters long and should not contain any special symbols"
                 {...usernameForm.getInputProps("username")}
               />
-            </SettingContainer>
+            </SettingSection>
 
             <SettingFooter>
               <div className="flex jcfe">
@@ -217,7 +211,7 @@ export const SettingsGeneral: React.FC = () => {
               </div>
             </SettingFooter>
           </form>
-        </Card>
+        </SettingContainer>
       </Container>
 
       <Modal
