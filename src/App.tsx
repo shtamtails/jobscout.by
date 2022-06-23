@@ -15,6 +15,7 @@ import { useAppDispatch } from "./hooks/redux";
 import { removeUser, setUser } from "./store/reducers/userReducer";
 import { Settings } from "./pages/Settings";
 import { NotificationsProvider } from "@mantine/notifications";
+import { Retrieve } from "./pages/Retrieve";
 
 function App() {
   const [colorScheme, setColorScheme] = useState<ColorScheme>("dark");
@@ -67,7 +68,8 @@ function App() {
               })}
             >
               <Routes>
-                <Route path="Settings" element={<Settings />} />
+                <Route path="settings" element={<Settings />} />
+                <Route path="/_/retrieve" element={<Retrieve />} />
               </Routes>
             </AppShell>
           </NotificationsProvider>
