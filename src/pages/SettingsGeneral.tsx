@@ -12,7 +12,7 @@ import React from "react";
 import { User, Trash } from "tabler-icons-react";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
 import { getAuth, updateProfile } from "firebase/auth";
-import { setUser } from "../store/reducers/userReducer";
+import { setImage, setUser, setUsername } from "../store/reducers/userReducer";
 import { useState } from "react";
 import { Container } from "@mantine/core";
 import { SettingFooter } from "../components/SettingFooter";
@@ -58,16 +58,7 @@ export const SettingsGeneral: React.FC = () => {
         .then(() => {
           setProfilePictureButtonLoading(false);
           setProfilePictureButtonSuccess(true);
-          dispatch(
-            setUser({
-              authorized: authorized,
-              email: email,
-              id: id,
-              verified: verified,
-              image: user.photoURL,
-              username: username,
-            })
-          );
+          dispatch(setImage(imageURL));
           setTimeout(() => {
             setProfilePictureButtonSuccess(false);
           }, 5000);
@@ -85,16 +76,7 @@ export const SettingsGeneral: React.FC = () => {
       })
         .then(() => {
           firebaseDelete(`profilePhotos/${user?.uid}_avatar`);
-          dispatch(
-            setUser({
-              authorized: authorized,
-              email: email,
-              id: id,
-              verified: verified,
-              image: null,
-              username: username,
-            })
-          );
+          dispatch(setImage(null));
         })
         .catch((error) => {
           console.error(error);
@@ -121,16 +103,7 @@ export const SettingsGeneral: React.FC = () => {
         .then(() => {
           setProfileSettingsButtonLoading(false);
           setProfileSettingsButtonSuccess(true);
-          dispatch(
-            setUser({
-              authorized: authorized,
-              email: email,
-              id: id,
-              verified: verified,
-              image: image,
-              username: usernameForm.values.username,
-            })
-          );
+          dispatch(setUsername(usernameForm.values.username));
           setTimeout(() => {
             setProfileSettingsButtonSuccess(false);
           }, 5000);

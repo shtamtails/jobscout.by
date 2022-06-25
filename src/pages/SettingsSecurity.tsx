@@ -10,17 +10,20 @@ import { ReauthModal } from "../components/ReauthModal";
 import { useEffect } from "react";
 import { showNotification } from "@mantine/notifications";
 import { SettingContainer } from "../components/SettingContainer";
+import { useAppDispatch } from "../hooks/redux";
+import { setEmail } from "../store/reducers/userReducer";
 
 export const SettingsSecurity: React.FC = () => {
   const theme = useMantineTheme();
   const auth = getAuth();
   const user = auth.currentUser;
+  const dispatch = useAppDispatch();
 
-  const [email, setEmail] = useState<string>("");
+  const [newEmail, setNewEmail] = useState<string>("");
 
   useEffect(() => {
     if (user?.email) {
-      setEmail(user.email);
+      setNewEmail(user.email);
     }
   }, [user?.email]);
 
@@ -59,7 +62,7 @@ export const SettingsSecurity: React.FC = () => {
       newEmail:
         values.newEmail === ""
           ? "New email cant be empty"
-          : values.newEmail === email
+          : values.newEmail === newEmail
           ? "New and old emails are the same"
           : values.newEmail.indexOf("@") === -1
           ? "Email is incorrect"
@@ -97,7 +100,8 @@ export const SettingsSecurity: React.FC = () => {
           setTimeout(() => {
             setEmailButtonSuccess(false);
           }, 5000);
-          setEmail(changeEmailForm.values.newEmail);
+          setNewEmail(changeEmailForm.values.newEmail);
+          dispatch(setEmail(changeEmailForm.values.newEmail));
         })
         .catch((error: FirebaseError) => {
           error.code === "auth/requires-recent-login" && setCallback("email");
@@ -186,7 +190,7 @@ export const SettingsSecurity: React.FC = () => {
             )}
 
             <SettingSection>
-              <TextInput label="Current email" disabled type="email" value={email} />
+              <TextInput label="Current email" disabled type="email" value={newEmail} />
             </SettingSection>
             <SettingSection>
               <TextInput label="New Email" {...changeEmailForm.getInputProps("newEmail")} />

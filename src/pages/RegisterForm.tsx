@@ -19,7 +19,6 @@ export const RegisterForm: React.FC<RegisterModalForm> = ({ setOpened, setAuthOv
 
   const registerForm = useForm({
     initialValues: {
-      username: "",
       email: "",
       password: "",
       confirmPassword: "",

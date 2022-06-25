@@ -1,3 +1,4 @@
+import { ColorScheme } from "@mantine/core";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface IUser {
@@ -7,6 +8,7 @@ export interface IUser {
   verified?: boolean;
   image?: string | null;
   username?: string | null;
+  defaultTheme?: ColorScheme;
 }
 
 const initialState: IUser = {
@@ -16,6 +18,7 @@ const initialState: IUser = {
   verified: false,
   image: null,
   username: null,
+  defaultTheme: "dark",
 };
 
 export const userReducer = createSlice({
@@ -41,7 +44,31 @@ export const userReducer = createSlice({
       state.image = undefined;
       state.username = null;
     },
+    setEmail: (state: IUser, action: PayloadAction<string>) => {
+      state.email = action.payload;
+    },
+    setImage: (state: IUser, action: PayloadAction<string | null>) => {
+      state.image = action.payload;
+    },
+    setUsername: (state: IUser, action: PayloadAction<string>) => {
+      state.username = action.payload;
+    },
+    setVerified: (state: IUser, action: PayloadAction<boolean>) => {
+      state.verified = action.payload;
+    },
+    setDefaultTheme: (state: IUser, action: PayloadAction<ColorScheme>) => {
+      state.defaultTheme = action.payload;
+    },
   },
 });
 
-export const { setAuthorization, setUser, removeUser } = userReducer.actions;
+export const {
+  setAuthorization,
+  setUser,
+  removeUser,
+  setEmail,
+  setImage,
+  setUsername,
+  setVerified,
+  setDefaultTheme,
+} = userReducer.actions;

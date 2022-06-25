@@ -11,13 +11,14 @@ import { Route, Routes } from "react-router-dom";
 import { HeaderContent } from "./pages/HeaderContent";
 import { ModalsProvider } from "@mantine/modals";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { useAppDispatch } from "./hooks/redux";
-import { removeUser, setUser } from "./store/reducers/userReducer";
+import { useAppDispatch, useAppSelector } from "./hooks/redux";
+import { removeUser, setDefaultTheme, setUser } from "./store/reducers/userReducer";
 import { Settings } from "./pages/Settings";
 import { NotificationsProvider } from "@mantine/notifications";
 import { Retrieve } from "./pages/Retrieve";
 
 function App() {
+  const { defaultTheme } = useAppSelector((user) => user.user);
   const [colorScheme, setColorScheme] = useState<ColorScheme>("dark");
 
   const toggleColorScheme = (value?: ColorScheme) =>
@@ -35,6 +36,7 @@ function App() {
             verified: user.emailVerified,
             username: user.displayName,
             image: user.photoURL,
+            defaultTheme: "light",
           })
         );
       } else {
