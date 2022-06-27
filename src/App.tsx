@@ -12,22 +12,26 @@ import { HeaderContent } from "./pages/HeaderContent";
 import { ModalsProvider } from "@mantine/modals";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useAppDispatch, useAppSelector } from "./hooks/redux";
-import { removeUser, setDefaultTheme, setUser } from "./store/reducers/userReducer";
+import { removeUser, setTheme, setUser } from "./store/reducers/userReducer";
 import { Settings } from "./pages/Settings";
 import { NotificationsProvider } from "@mantine/notifications";
 import { Retrieve } from "./pages/Retrieve";
+import { database } from "./firebase";
+import { onValue, ref } from "firebase/database";
 
 function App() {
-  const { defaultTheme } = useAppSelector((user) => user.user);
-  const [colorScheme, setColorScheme] = useState<ColorScheme>("dark");
-
-  const toggleColorScheme = (value?: ColorScheme) =>
-    setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
+  const { theme } = useAppSelector((user) => user.user);
   const dispatch = useAppDispatch();
+
+  const auth = getAuth();
   useEffect(() => {
-    const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        const userDatabaseRef = ref(database, `users/` + user.uid);
+        onValue(userDatabaseRef, (snapshot) => {
+          const data = snapshot.val();
+          dispatch(setTheme(data.theme));
+        });
         dispatch(
           setUser({
             authorized: true,
@@ -36,7 +40,6 @@ function App() {
             verified: user.emailVerified,
             username: user.displayName,
             image: user.photoURL,
-            defaultTheme: "light",
           })
         );
       } else {
@@ -44,6 +47,15 @@ function App() {
       }
     });
   }, [dispatch]);
+
+  useEffect(() => {
+    theme && setColorScheme(theme);
+  }, [theme]);
+
+  const [colorScheme, setColorScheme] = useState<ColorScheme>("dark");
+
+  const toggleColorScheme = (value?: ColorScheme) =>
+    setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
 
   return (
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>

@@ -7,15 +7,5 @@ interface SettingsContainer {
 }
 
 export const SettingContainer: React.FC<SettingsContainer> = ({ children }) => {
-  return (
-    <Card
-      styles={{
-        root: {
-          padding: `0 !important`,
-        },
-      }}
-    >
-      {children}
-    </Card>
-  );
+  return <Card styles={{ root: { padding: `0 !important` } }}>{children}</Card>;
 };

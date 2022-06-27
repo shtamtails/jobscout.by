@@ -3,17 +3,27 @@ import React from "react";
 import { SettingContainer } from "../components/SettingContainer";
 import { SettingSection } from "../components/SettingSection";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
-import { setDefaultTheme } from "../store/reducers/userReducer";
+import { setTheme } from "../store/reducers/userReducer";
 import { useState } from "react";
+import { ref, set } from "firebase/database";
+import { database } from "../firebase";
 
 export const SettingsInterface: React.FC = () => {
-  const { defaultTheme } = useAppSelector((user) => user.user);
-  const [theme, setTheme] = useState<boolean>(defaultTheme === "light" ? true : false);
+  const { email, verified, image, theme, id, username } = useAppSelector((user) => user.user);
+  const [defaultTheme, setDefaultTheme] = useState<boolean>(theme === "light" ? true : false);
   const dispatch = useAppDispatch();
 
   const changeDefaultTheme = () => {
-    setTheme(!theme);
-    dispatch(setDefaultTheme(defaultTheme === "light" ? "dark" : "light"));
+    set(ref(database, "users/" + id), {
+      id: id,
+      username: username,
+      email: email,
+      verified: verified,
+      image: image,
+      theme: theme === "light" ? "dark" : "light",
+    });
+    setDefaultTheme(!defaultTheme);
+    dispatch(setTheme(theme === "light" ? "dark" : "light"));
   };
 
   return (
@@ -26,7 +36,7 @@ export const SettingsInterface: React.FC = () => {
             <Switch
               label="Use light theme as default"
               py="sm"
-              checked={theme}
+              checked={defaultTheme}
               onChange={changeDefaultTheme}
             />
             <Switch label="Hide navbar at launch" py="sm" />

@@ -8,7 +8,7 @@ export interface IUser {
   verified?: boolean;
   image?: string | null;
   username?: string | null;
-  defaultTheme?: ColorScheme;
+  theme?: ColorScheme;
 }
 
 const initialState: IUser = {
@@ -18,7 +18,7 @@ const initialState: IUser = {
   verified: false,
   image: null,
   username: null,
-  defaultTheme: "dark",
+  theme: "dark",
 };
 
 export const userReducer = createSlice({
@@ -35,6 +35,7 @@ export const userReducer = createSlice({
       state.verified = action.payload?.verified;
       state.image = action.payload?.image;
       state.username = action.payload?.username;
+      state.theme = action.payload?.theme;
     },
     removeUser: (state: IUser) => {
       state.authorized = false;
@@ -56,8 +57,8 @@ export const userReducer = createSlice({
     setVerified: (state: IUser, action: PayloadAction<boolean>) => {
       state.verified = action.payload;
     },
-    setDefaultTheme: (state: IUser, action: PayloadAction<ColorScheme>) => {
-      state.defaultTheme = action.payload;
+    setTheme: (state: IUser, action: PayloadAction<ColorScheme>) => {
+      state.theme = action.payload;
     },
   },
 });
@@ -70,5 +71,5 @@ export const {
   setImage,
   setUsername,
   setVerified,
-  setDefaultTheme,
+  setTheme,
 } = userReducer.actions;
