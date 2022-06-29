@@ -4,39 +4,27 @@ import React, { useState } from "react";
 import { SettingSection } from "../components/SettingSection";
 import { SettingFooter } from "../components/SettingFooter";
 import { getAuth, sendEmailVerification, updateEmail, updatePassword } from "firebase/auth";
-import { Send } from "tabler-icons-react";
+import { Check, Lock, Mail, Mailbox, Send } from "tabler-icons-react";
 import { FirebaseError } from "firebase/app";
 import { ReauthModal } from "../components/ReauthModal";
-import { useEffect } from "react";
 import { showNotification } from "@mantine/notifications";
 import { SettingContainer } from "../components/SettingContainer";
-import { useAppDispatch } from "../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../hooks/redux";
 import { setEmail } from "../store/reducers/userReducer";
-import { DB_UPDATE } from "../utils/updateDatabase";
+import { DB_UPDATE_USER } from "../utils/updateDatabase";
 
 export const SettingsSecurity: React.FC = () => {
-  const theme = useMantineTheme();
+  const { email } = useAppSelector((user) => user.user);
+  const dispatch = useAppDispatch();
   const auth = getAuth();
   const user = auth.currentUser;
+  const theme = useMantineTheme();
 
-  const dispatch = useAppDispatch();
-
-  const [newEmail, setNewEmail] = useState<string>("");
-
-  useEffect(() => {
-    if (user?.email) {
-      setNewEmail(user.email);
-    }
-  }, [user?.email]);
-
-  const [modal, setModal] = useState<boolean>(false);
+  const [newEmail, setNewEmail] = useState<string | null>(email);
+  const [reAuthModal, setReAuthModal] = useState<boolean>(false);
   const [callback, setCallback] = useState<string | null>(null);
-
-  const [passowrdButtonLoading, setPasswordButtonLoading] = useState<boolean>(false);
-  const [passowrdButtonSuccess, setPasswordButtonSuccess] = useState<boolean>(false);
-
-  const [emailButtonLoading, setEmailButtonLoading] = useState<boolean>(false);
-  const [emailButtonSuccess, setEmailButtonSuccess] = useState<boolean>(false);
+  const [pwdBtnState, setPwnBtnState] = useState<string | null>(null);
+  const [emailBtnState, setEmailBtnState] = useState<string | null>(null);
 
   const changePasswordForm = useForm({
     initialValues: {
@@ -74,43 +62,54 @@ export const SettingsSecurity: React.FC = () => {
 
   const changePassword = () => {
     const password = changePasswordForm.values.password;
-    setPasswordButtonLoading(true);
+    setPwnBtnState("loading");
     if (user) {
       updatePassword(user, password)
         .then(() => {
-          setPasswordButtonLoading(false);
-          setPasswordButtonSuccess(true);
+          setPwnBtnState("success");
           setTimeout(() => {
-            setPasswordButtonSuccess(false);
-          }, 5000);
+            setPwnBtnState(null);
+          }, 3000);
         })
         .catch((error: FirebaseError) => {
-          error.code === "auth/requires-recent-login" && setCallback("password");
-          setModal(true);
-          console.log(error.code);
+          // * if firebase fouce us to re-auth => display modal with
+          // * password input and callback changePassword()
+
+          switch (error.code) {
+            case "auth/requires-recent-login":
+              setCallback("password");
+              setReAuthModal(true);
+              break;
+          }
         });
     }
   };
 
   const changeEmail = () => {
     const email = changeEmailForm.values.newEmail;
-    setEmailButtonLoading(true);
+    setEmailBtnState("loading");
     if (user) {
       updateEmail(user, email)
         .then(() => {
-          DB_UPDATE({ email: email });
-          setEmailButtonLoading(false);
-          setEmailButtonSuccess(true);
+          DB_UPDATE_USER({ email: email }); // update db
+          dispatch(setEmail(email)); // update global states
+          setNewEmail(email); // update local state
+
+          setEmailBtnState("success");
           setTimeout(() => {
-            setEmailButtonSuccess(false);
-          }, 5000);
-          setNewEmail(email);
-          dispatch(setEmail(email));
+            setEmailBtnState(null);
+          }, 3000);
         })
         .catch((error: FirebaseError) => {
-          error.code === "auth/requires-recent-login" && setCallback("email");
-          setModal(true);
-          console.log(error.code);
+          // * if firebase fouce us to re-auth => display modal with
+          // * password input and callback changeEmail()
+
+          switch (error.code) {
+            case "auth/requires-recent-login":
+              setCallback("email");
+              setReAuthModal(true);
+              break;
+          }
         });
     }
   };
@@ -147,23 +146,27 @@ export const SettingsSecurity: React.FC = () => {
                 label="New password"
                 description="Minimum 6 characters including letters and numbers"
                 {...changePasswordForm.getInputProps("password")}
+                icon={<Lock size={20} />}
               />
             </SettingSection>
             <SettingSection>
               <PasswordInput
                 label="Confirm new password"
                 {...changePasswordForm.getInputProps("confirmPassword")}
+                icon={<Lock size={20} />}
               />
             </SettingSection>
             <SettingFooter>
               <div className="flex jcfe">
                 <Button
-                  loading={passowrdButtonLoading}
+                  loading={pwdBtnState === "loading"}
                   size="sm"
                   type="submit"
                   variant={theme.colorScheme === "dark" ? "light" : "filled"}
                 >
-                  {passowrdButtonLoading ? "" : passowrdButtonSuccess ? "Updated!" : "Update"}
+                  {pwdBtnState === "loading" && ""}
+                  {pwdBtnState === "success" && <Check />}
+                  {pwdBtnState === null && "Update"}
                 </Button>
               </div>
             </SettingFooter>
@@ -194,19 +197,31 @@ export const SettingsSecurity: React.FC = () => {
             )}
 
             <SettingSection>
-              <TextInput label="Current email" disabled type="email" value={newEmail} />
+              <TextInput
+                label="Current email"
+                disabled
+                type="email"
+                value={newEmail ? newEmail : ""}
+                icon={<Mail size={20} color="grey" />}
+              />
             </SettingSection>
             <SettingSection>
-              <TextInput label="New Email" {...changeEmailForm.getInputProps("newEmail")} />
+              <TextInput
+                label="New Email"
+                {...changeEmailForm.getInputProps("newEmail")}
+                icon={<Mail size={20} />}
+              />
             </SettingSection>
             <SettingFooter>
               <div className="flex jcfe">
                 <Button
                   type="submit"
-                  loading={emailButtonLoading}
+                  loading={emailBtnState === "loading"}
                   variant={theme.colorScheme === "dark" ? "light" : "filled"}
                 >
-                  {emailButtonLoading ? "" : emailButtonSuccess ? "Updated!" : "Update"}
+                  {emailBtnState === "loading" && ""}
+                  {emailBtnState === "success" && <Check />}
+                  {emailBtnState === null && "Update"}
                 </Button>
               </div>
             </SettingFooter>
@@ -214,10 +229,10 @@ export const SettingsSecurity: React.FC = () => {
         </SettingContainer>
       </Container>
       {callback === "password" && (
-        <ReauthModal callback={changePassword} modal={modal} setModal={setModal} />
+        <ReauthModal callback={changePassword} modal={reAuthModal} setModal={setReAuthModal} />
       )}
       {callback === "email" && (
-        <ReauthModal callback={changeEmail} modal={modal} setModal={setModal} />
+        <ReauthModal callback={changeEmail} modal={reAuthModal} setModal={setReAuthModal} />
       )}
     </>
   );

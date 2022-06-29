@@ -24,6 +24,7 @@ export const initializeUser = () => (dispatch: AppDispatch) => {
             })
           );
         } else {
+          // ! THROW ERROR
           console.log("no data");
         }
       });

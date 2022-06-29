@@ -8,18 +8,45 @@ import {
 import { app } from "../firebase";
 import { FirebaseError } from "firebase/app";
 
-export const firebaseUpload = (
-  file: File,
-  path: string,
-  metaData: object,
-  callback: Function,
-  setProgress?: Function,
-  setUploadState?: Function,
-  setError?: Function
-) => {
+export interface IDelete {
+  path: string;
+}
+
+export const firebaseDelete = ({ path }: IDelete) => {
+  const storage = getStorage();
+  const fileRef = ref(storage, path);
+
+  deleteObject(fileRef)
+    .then(() => {
+      // file deleted
+    })
+    .catch((error: FirebaseError) => {
+      console.error(error);
+    });
+};
+
+export interface IUpload {
+  file: File;
+  path: string;
+  callback: Function;
+  metadata?: object;
+  setProgress?: Function;
+  setUploadState?: Function;
+  setError?: Function;
+}
+
+// * Uploads file to firebase DB and executes callback with link to this file
+export const firebaseUpload = ({
+  file,
+  path,
+  metadata,
+  callback,
+  setProgress,
+  setUploadState,
+  setError,
+}: IUpload) => {
   const storage = getStorage(app);
   const storageRef = ref(storage, path);
-  const metadata = metaData;
   const uploadTask = uploadBytesResumable(storageRef, file, metadata);
 
   uploadTask.on(
@@ -44,17 +71,4 @@ export const firebaseUpload = (
       });
     }
   );
-};
-
-export const firebaseDelete = (path: string) => {
-  const storage = getStorage();
-  const fileRef = ref(storage, path);
-
-  deleteObject(fileRef)
-    .then(() => {
-      console.log("file deleted");
-    })
-    .catch((error: FirebaseError) => {
-      console.error(error);
-    });
 };
