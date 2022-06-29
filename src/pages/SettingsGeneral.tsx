@@ -23,6 +23,9 @@ import { dropzoneChildren } from "../components/DropzoneSettings";
 
 import { firebaseDelete, firebaseUpload } from "../hooks/firebase";
 import { SettingContainer } from "../components/SettingContainer";
+import { ref, update } from "firebase/database";
+import { database } from "../firebase";
+import { DB_UPDATE } from "../utils/updateDatabase";
 
 export const SettingsGeneral: React.FC = () => {
   const [dropdownModal, setDropdownModal] = useState<boolean>(false);
@@ -33,9 +36,7 @@ export const SettingsGeneral: React.FC = () => {
   const [profileSettingsButtonLoading, setProfileSettingsButtonLoading] = useState<boolean>(false);
   const [profileSettingsButtonSuccess, setProfileSettingsButtonSuccess] = useState<boolean>(false);
 
-  const { authorized, email, id, verified, image, username } = useAppSelector(
-    (state) => state.user
-  );
+  const { image, username } = useAppSelector((state) => state.user);
 
   const dispatch = useAppDispatch();
   const auth = getAuth();
@@ -56,6 +57,7 @@ export const SettingsGeneral: React.FC = () => {
         photoURL: `${imageURL}`,
       })
         .then(() => {
+          DB_UPDATE({ image: `${imageURL}` });
           setProfilePictureButtonLoading(false);
           setProfilePictureButtonSuccess(true);
           dispatch(setImage(imageURL));
@@ -75,6 +77,7 @@ export const SettingsGeneral: React.FC = () => {
         photoURL: "",
       })
         .then(() => {
+          DB_UPDATE({ image: "" });
           firebaseDelete(`profilePhotos/${user?.uid}_avatar`);
           dispatch(setImage(null));
         })
@@ -95,15 +98,16 @@ export const SettingsGeneral: React.FC = () => {
 
   const changeUsername = () => {
     setProfileSettingsButtonLoading(true);
-
+    const username = usernameForm.values.username;
     if (user) {
       updateProfile(user, {
-        displayName: usernameForm.values.username,
+        displayName: username,
       })
         .then(() => {
+          DB_UPDATE({ username: username });
           setProfileSettingsButtonLoading(false);
           setProfileSettingsButtonSuccess(true);
-          dispatch(setUsername(usernameForm.values.username));
+          dispatch(setUsername(username));
           setTimeout(() => {
             setProfileSettingsButtonSuccess(false);
           }, 5000);

@@ -12,40 +12,22 @@ import { HeaderContent } from "./pages/HeaderContent";
 import { ModalsProvider } from "@mantine/modals";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useAppDispatch, useAppSelector } from "./hooks/redux";
-import { removeUser, setTheme, setUser } from "./store/reducers/userReducer";
+import { removeUser, setLanguage, setTheme, setUser } from "./store/reducers/userReducer";
 import { Settings } from "./pages/Settings";
 import { NotificationsProvider } from "@mantine/notifications";
 import { Retrieve } from "./pages/Retrieve";
 import { database } from "./firebase";
-import { onValue, ref } from "firebase/database";
+import { onValue, ref, set, update } from "firebase/database";
+import { initializeUser } from "./utils/initializeUser";
+import { DB_UPDATE } from "./utils/updateDatabase";
 
 function App() {
-  const { theme } = useAppSelector((user) => user.user);
+  const { email, verified, image, theme } = useAppSelector((user) => user.user);
   const dispatch = useAppDispatch();
-
   const auth = getAuth();
+
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const userDatabaseRef = ref(database, `users/` + user.uid);
-        onValue(userDatabaseRef, (snapshot) => {
-          const data = snapshot.val();
-          dispatch(setTheme(data.theme));
-        });
-        dispatch(
-          setUser({
-            authorized: true,
-            email: user.email,
-            id: user.uid,
-            verified: user.emailVerified,
-            username: user.displayName,
-            image: user.photoURL,
-          })
-        );
-      } else {
-        dispatch(removeUser);
-      }
-    });
+    dispatch(initializeUser());
   }, [dispatch]);
 
   useEffect(() => {
@@ -54,8 +36,10 @@ function App() {
 
   const [colorScheme, setColorScheme] = useState<ColorScheme>("dark");
 
-  const toggleColorScheme = (value?: ColorScheme) =>
-    setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
+  const toggleColorScheme = () => {
+    dispatch(setTheme(theme === "light" ? "dark" : "light")); // update state
+    DB_UPDATE({ theme: theme === "light" ? "dark" : "light" });
+  };
 
   return (
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>

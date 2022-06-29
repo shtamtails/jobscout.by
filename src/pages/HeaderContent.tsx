@@ -2,14 +2,17 @@ import {
   ActionIcon,
   Autocomplete,
   Avatar,
+  Button,
   Divider,
   Indicator,
   Menu,
+  Modal,
   Popover,
+  Select,
   Text,
   useMantineColorScheme,
 } from "@mantine/core";
-import React from "react";
+import React, { useRef } from "react";
 import { useState } from "react";
 import { useAppSelector, useAppDispatch } from "../hooks/redux";
 import {
@@ -23,15 +26,21 @@ import {
   DoorEnter,
 } from "tabler-icons-react";
 import { Login } from "./Login";
-import { removeUser } from "../store/reducers/userReducer";
+import { removeUser, setLanguage } from "../store/reducers/userReducer";
 import { getAuth, signOut } from "firebase/auth";
 import { Link } from "react-router-dom";
+import { child, push, ref, update } from "firebase/database";
+import { database } from "../firebase";
 
 export const HeaderContent: React.FC = () => {
-  const [loginModal, setLoginModal] = useState<boolean>(false);
-  const [accountTooltip, setAccountTooltip] = useState<boolean>(false);
+  const { authorized, username, verified, image, language, id } = useAppSelector(
+    (state) => state.user
+  );
 
-  const { authorized, username, verified, image } = useAppSelector((state) => state.user);
+  const [loginModal, setLoginModal] = useState<boolean>(false);
+  const [languageModal, setLanguageModal] = useState<boolean>(false);
+  const [appLanguage, setAppLanguage] = useState<string | null>(language ? language : null);
+  const [accountTooltip, setAccountTooltip] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
 
@@ -44,9 +53,39 @@ export const HeaderContent: React.FC = () => {
       ? ["gmail.com", "outlook.com", "yahoo.com"].map((provider) => `${searchValue}@${provider}`)
       : [];
 
+  const changeLanguage = () => {
+    if (appLanguage !== null) {
+      const userRef = ref(database, `users/${id}`); // user profile in database ref
+      dispatch(setLanguage(appLanguage));
+      update(userRef, { language: appLanguage });
+    }
+  };
+
   return (
     <>
       {loginModal && <Login opened={loginModal} setOpened={setLoginModal} />}
+      <Modal opened={languageModal} onClose={() => setLanguageModal(false)} title="Change language">
+        <>
+          <Select
+            placeholder="Language"
+            data={[
+              { value: "EN", label: "English" },
+              { value: "RU", label: "Русский" },
+              { value: "UA", label: "Український" },
+            ]}
+            value={appLanguage}
+            onChange={setAppLanguage}
+          />
+          <Button
+            fullWidth
+            mt="lg"
+            variant="light"
+            onClick={() => appLanguage !== null && changeLanguage()}
+          >
+            Save
+          </Button>
+        </>
+      </Modal>
 
       <header>
         <div className="app-logo">App</div>
@@ -131,7 +170,9 @@ export const HeaderContent: React.FC = () => {
                   </div>
                 </Popover>
                 <Link to="/settings"></Link>
-                <Menu.Item icon={<Language size={18} />}>Language</Menu.Item>
+                <Menu.Item icon={<Language size={18} />} onClick={() => setLanguageModal(true)}>
+                  Language
+                </Menu.Item>
                 <Divider />
                 <Menu.Item
                   color="red"

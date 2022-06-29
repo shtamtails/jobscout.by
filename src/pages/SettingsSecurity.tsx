@@ -12,11 +12,13 @@ import { showNotification } from "@mantine/notifications";
 import { SettingContainer } from "../components/SettingContainer";
 import { useAppDispatch } from "../hooks/redux";
 import { setEmail } from "../store/reducers/userReducer";
+import { DB_UPDATE } from "../utils/updateDatabase";
 
 export const SettingsSecurity: React.FC = () => {
   const theme = useMantineTheme();
   const auth = getAuth();
   const user = auth.currentUser;
+
   const dispatch = useAppDispatch();
 
   const [newEmail, setNewEmail] = useState<string>("");
@@ -71,11 +73,11 @@ export const SettingsSecurity: React.FC = () => {
   });
 
   const changePassword = () => {
+    const password = changePasswordForm.values.password;
     setPasswordButtonLoading(true);
     if (user) {
-      updatePassword(user, changePasswordForm.values.password)
+      updatePassword(user, password)
         .then(() => {
-          console.log("password changed");
           setPasswordButtonLoading(false);
           setPasswordButtonSuccess(true);
           setTimeout(() => {
@@ -91,17 +93,19 @@ export const SettingsSecurity: React.FC = () => {
   };
 
   const changeEmail = () => {
+    const email = changeEmailForm.values.newEmail;
     setEmailButtonLoading(true);
     if (user) {
-      updateEmail(user, changeEmailForm.values.newEmail)
+      updateEmail(user, email)
         .then(() => {
+          DB_UPDATE({ email: email });
           setEmailButtonLoading(false);
           setEmailButtonSuccess(true);
           setTimeout(() => {
             setEmailButtonSuccess(false);
           }, 5000);
-          setNewEmail(changeEmailForm.values.newEmail);
-          dispatch(setEmail(changeEmailForm.values.newEmail));
+          setNewEmail(email);
+          dispatch(setEmail(email));
         })
         .catch((error: FirebaseError) => {
           error.code === "auth/requires-recent-login" && setCallback("email");

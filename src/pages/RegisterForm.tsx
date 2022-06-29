@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
 import { createUserWithEmailAndPassword, getAuth, UserCredential } from "firebase/auth";
 import { useState } from "react";
 import { FirebaseError } from "firebase/app";
+import { ref, set } from "firebase/database";
+import { database } from "../firebase";
 
 interface RegisterModalForm {
   setOpened: Function;
@@ -41,14 +43,17 @@ export const RegisterForm: React.FC<RegisterModalForm> = ({ setOpened, setAuthOv
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, registerForm.values.email, registerForm.values.password)
       .then(({ user }: UserCredential) => {
+        set(ref(database, `users/` + user.uid), {
+          email: user.email,
+          id: user.uid,
+          verified: user.emailVerified,
+        });
         dispatch(
           setUser({
             authorized: true,
             email: user.email,
             id: user.uid,
             verified: user.emailVerified,
-            image: user.photoURL,
-            username: user.displayName,
           })
         );
         setAuthOverlay(false);
