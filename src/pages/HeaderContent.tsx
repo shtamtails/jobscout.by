@@ -24,6 +24,7 @@ import {
   Language,
   DoorExit,
   DoorEnter,
+  BrandReactNative,
 } from "tabler-icons-react";
 import { Login } from "./Login";
 import { removeUser, setLanguage } from "../store/reducers/userReducer";
@@ -88,7 +89,14 @@ export const HeaderContent: React.FC = () => {
       </Modal>
 
       <header>
-        <div className="app-logo">App</div>
+        <Link to="/">
+          <div className="app-logo">
+            <BrandReactNative size={36} />
+            <Text pl="xs" size="xl" style={{ fontWeight: "800" }}>
+              FOOBARBAZ
+            </Text>
+          </div>
+        </Link>
 
         <div className="app-actions">
           <Autocomplete

@@ -18,6 +18,7 @@ import { Retrieve } from "./pages/Retrieve";
 import { initializeUser } from "./utils/initializeUser";
 import { DB_UPDATE_USER } from "./utils/updateDatabase";
 import { NavbarContent } from "./pages/NavbarContent";
+import { Content } from "./pages/Content";
 
 function App() {
   const { theme } = useAppSelector((user) => user.user);
@@ -64,6 +65,7 @@ function App() {
               })}
             >
               <Routes>
+                <Route path="/" element={<Content />} />
                 <Route path="settings" element={<Settings />} />
                 <Route path="/_/retrieve" element={<Retrieve />} />
               </Routes>

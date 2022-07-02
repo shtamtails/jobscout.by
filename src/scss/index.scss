@@ -30,6 +30,7 @@ header {
 
 a {
   text-decoration: none;
+  color: inherit;
 }
 
 $sizes: "xs", "sm", "md", "lg", "xl";
@@ -194,4 +195,9 @@ $spacing-map: (
   padding: 5px 8px;
   cursor: pointer;
   box-sizing: border-box;
+}
+
+.services-content {
+  display: flex;
+  flex-wrap: wrap;
 }
