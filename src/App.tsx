@@ -17,6 +17,7 @@ import { NotificationsProvider } from "@mantine/notifications";
 import { Retrieve } from "./pages/Retrieve";
 import { initializeUser } from "./utils/initializeUser";
 import { DB_UPDATE_USER } from "./utils/updateDatabase";
+import { NavbarContent } from "./pages/NavbarContent";
 
 function App() {
   const { theme } = useAppSelector((user) => user.user);
@@ -46,6 +47,7 @@ function App() {
               padding="md"
               navbar={
                 <Navbar width={{ base: 300 }} p="xs">
+                  <NavbarContent />
                   {/* Navbar content */}
                 </Navbar>
               }

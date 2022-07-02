@@ -134,26 +134,23 @@ export const HeaderContent: React.FC = () => {
                 <Popover
                   opened={accountTooltip}
                   onClose={() => setAccountTooltip(false)}
-                  position="bottom"
-                  placement="center"
                   withArrow
-                  trapFocus={false}
-                  closeOnEscape={false}
-                  transition="pop-top-left"
                   width={260}
                   styles={{ body: { pointerEvents: "none" }, root: { width: "100%" } }}
                   target={
-                    <Indicator
-                      position="middle-end"
-                      offset={12}
-                      color="red"
-                      onMouseEnter={() => setAccountTooltip(true)}
-                      onMouseLeave={() => setAccountTooltip(false)}
-                    >
-                      <Link to="/settings">
-                        <Menu.Item icon={<Settings size={18} />}>Settings</Menu.Item>
-                      </Link>
-                    </Indicator>
+                    <>
+                      <Indicator
+                        position="middle-end"
+                        offset={12}
+                        color="red"
+                        onMouseEnter={() => setAccountTooltip(true)}
+                        onMouseLeave={() => setAccountTooltip(false)}
+                      >
+                        <Link to="/settings">
+                          <Menu.Item icon={<Settings size={18} />}>Settings</Menu.Item>
+                        </Link>
+                      </Indicator>
+                    </>
                   }
                 >
                   <div style={{ display: "flex", flexDirection: "column" }}>
@@ -169,6 +166,7 @@ export const HeaderContent: React.FC = () => {
                     )}
                   </div>
                 </Popover>
+
                 <Link to="/settings"></Link>
                 <Menu.Item icon={<Language size={18} />} onClick={() => setLanguageModal(true)}>
                   Language

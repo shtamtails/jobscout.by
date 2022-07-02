@@ -35,6 +35,7 @@ a {
 $sizes: "xs", "sm", "md", "lg", "xl";
 
 $spacing-map: (
+  xs: 5px,
   sm: 10px,
   md: 20px,
   lg: 30px,
@@ -185,4 +186,12 @@ $spacing-map: (
   margin-left: 0px;
   margin-right: 0px;
   padding-left: 0px;
+}
+
+.navbar-link {
+  font-weight: 500;
+  flex: 1;
+  padding: 5px 8px;
+  cursor: pointer;
+  box-sizing: border-box;
 }

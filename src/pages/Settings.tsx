@@ -15,8 +15,6 @@ export const Settings: React.FC = () => {
           <Tabs.Tab label="Security and Privacy">
             <SettingsSecurity />
           </Tabs.Tab>
-
-          <Tabs.Tab label="Other">Other</Tabs.Tab>
         </Tabs>
       </Container>
     </>
