@@ -4,14 +4,14 @@ import React, { useState } from "react";
 import { getAuth, sendEmailVerification, updateEmail, updatePassword } from "firebase/auth";
 import { Check, Lock, Mail, Mailbox, Send } from "tabler-icons-react";
 import { FirebaseError } from "firebase/app";
-import { ReauthModal } from "../components/ReauthModal";
 import { showNotification } from "@mantine/notifications";
-import { SettingContainer } from "../components/Settings/SettingContainer";
-import { useAppDispatch, useAppSelector } from "../hooks/redux";
-import { setEmail } from "../store/reducers/userReducer";
-import { DB_UPDATE_USER } from "../utils/updateDatabase";
-import { SettingFooter } from "../components/Settings/SettingFooter";
-import { SettingSection } from "../components/Settings/SettingSection";
+import { ReauthModal } from "components/ReauthModal";
+import { SettingContainer } from "components/Settings/SettingContainer";
+import { SettingFooter } from "components/Settings/SettingFooter";
+import { SettingSection } from "components/Settings/SettingSection";
+import { useAppSelector, useAppDispatch } from "hooks/redux";
+import { setEmail } from "store/reducers/userReducer";
+import { DB_UPDATE_USER } from "utils/updateDatabase";
 
 export const SettingsSecurity: React.FC = () => {
   const { email } = useAppSelector((user) => user.user);

@@ -1,19 +1,19 @@
 import { Avatar, Card, Button, ActionIcon, TextInput, Text, Modal, useMantineTheme } from "@mantine/core";
 import React from "react";
 import { User, Trash, Check } from "tabler-icons-react";
-import { useAppDispatch, useAppSelector } from "../hooks/redux";
 import { getAuth, updateProfile } from "firebase/auth";
-import { setImage, setUsername } from "../store/reducers/userReducer";
 import { useState } from "react";
 import { Container } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
-import { dropzoneChildren } from "../components/DropzoneSettings";
-import { firebaseDelete, firebaseUpload } from "../hooks/firebase";
-import { SettingContainer } from "../components/Settings/SettingContainer";
-import { DB_UPDATE_USER } from "../utils/updateDatabase";
-import { SettingSection } from "../components/Settings/SettingSection";
-import { SettingFooter } from "../components/Settings/SettingFooter";
+import { dropzoneChildren } from "components/DropzoneSettings";
+import { SettingContainer } from "components/Settings/SettingContainer";
+import { SettingFooter } from "components/Settings/SettingFooter";
+import { SettingSection } from "components/Settings/SettingSection";
+import { firebaseUpload, firebaseDelete } from "hooks/firebase";
+import { useAppSelector, useAppDispatch } from "hooks/redux";
+import { setImage, setUsername } from "store/reducers/userReducer";
+import { DB_UPDATE_USER } from "utils/updateDatabase";
 
 export const SettingsGeneral: React.FC = () => {
   const { image, username } = useAppSelector((state) => state.user);

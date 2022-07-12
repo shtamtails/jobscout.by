@@ -12,7 +12,7 @@ export const firebaseErorHandler = ({
   setLoginError,
   setPasswordError,
   setOtherError,
-}: IErrorHandler): void => {
+}: IErrorHandler) => {
   switch (code) {
     case "auth/app-not-authorized":
       setOtherError && setOtherError(`[${code}]. Something went wrong. Contact administration.`);
@@ -63,6 +63,9 @@ export const firebaseErorHandler = ({
     case "auth/email-already-in-use":
       setEmailError && setEmailError("Email is already registered");
       break;
+    case "auth/invalid-action-code":
+      setOtherError && setOtherError("Invalid action code");
+      return "Invalid action code";
   }
 };
 

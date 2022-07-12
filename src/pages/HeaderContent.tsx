@@ -12,7 +12,7 @@ import {
   Text,
   useMantineColorScheme,
 } from "@mantine/core";
-import React, { useRef } from "react";
+import React from "react";
 import { useState } from "react";
 import { useAppSelector, useAppDispatch } from "../hooks/redux";
 import {
@@ -30,13 +30,10 @@ import { Login } from "./Login";
 import { removeUser, setLanguage } from "../store/reducers/userReducer";
 import { getAuth, signOut } from "firebase/auth";
 import { Link } from "react-router-dom";
-import { child, push, ref, update } from "firebase/database";
-import { database } from "../firebase";
+import { DB_UPDATE_USER } from "utils/updateDatabase";
 
 export const HeaderContent: React.FC = () => {
-  const { authorized, username, verified, image, language, id } = useAppSelector(
-    (state) => state.user
-  );
+  const { authorized, username, verified, image, language } = useAppSelector((state) => state.user);
 
   const [loginModal, setLoginModal] = useState<boolean>(false);
   const [languageModal, setLanguageModal] = useState<boolean>(false);
@@ -56,9 +53,8 @@ export const HeaderContent: React.FC = () => {
 
   const changeLanguage = () => {
     if (appLanguage !== null) {
-      const userRef = ref(database, `users/${id}`); // user profile in database ref
       dispatch(setLanguage(appLanguage));
-      update(userRef, { language: appLanguage });
+      DB_UPDATE_USER({ language: appLanguage });
     }
   };
 
@@ -77,12 +73,7 @@ export const HeaderContent: React.FC = () => {
             value={appLanguage}
             onChange={setAppLanguage}
           />
-          <Button
-            fullWidth
-            mt="lg"
-            variant="light"
-            onClick={() => appLanguage !== null && changeLanguage()}
-          >
+          <Button fullWidth mt="lg" variant="light" onClick={() => appLanguage !== null && changeLanguage()}>
             Save
           </Button>
         </>

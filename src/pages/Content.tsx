@@ -1,20 +1,6 @@
-import {
-  Anchor,
-  BackgroundImage,
-  Badge,
-  Breadcrumbs,
-  Button,
-  Card,
-  Container,
-  Group,
-  Image,
-  SimpleGrid,
-  Text,
-  Title,
-} from "@mantine/core";
+import { Anchor, Breadcrumbs, Container, SimpleGrid } from "@mantine/core";
 import React from "react";
-import { BorderRadius, Star } from "tabler-icons-react";
-import { ServiceCard } from "../components/ServiceCard";
+import { ServiceCard } from "../components/Card/ServiceCard";
 
 export const Content: React.FC = () => {
   const items = [

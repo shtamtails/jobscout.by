@@ -1,20 +1,13 @@
 import { useEffect, useState } from "react";
-import {
-  AppShell,
-  ColorScheme,
-  ColorSchemeProvider,
-  Header,
-  MantineProvider,
-  Navbar,
-} from "@mantine/core";
+import { AppShell, ColorScheme, ColorSchemeProvider, Header, MantineProvider, Navbar } from "@mantine/core";
 import { Route, Routes } from "react-router-dom";
 import { HeaderContent } from "./pages/HeaderContent";
 import { ModalsProvider } from "@mantine/modals";
 import { useAppDispatch, useAppSelector } from "./hooks/redux";
 import { setTheme } from "./store/reducers/userReducer";
-import { Settings } from "./pages/Settings";
+import { Settings } from "./pages/Settings/Settings";
 import { NotificationsProvider } from "@mantine/notifications";
-import { Retrieve } from "./pages/Retrieve";
+import { Retrieve } from "./pages/Actions/Retrieve";
 import { initializeUser } from "./utils/initializeUser";
 import { DB_UPDATE_USER } from "./utils/updateDatabase";
 import { NavbarContent } from "./pages/NavbarContent";
@@ -58,8 +51,7 @@ function App() {
               }
               styles={(theme) => ({
                 main: {
-                  backgroundColor:
-                    theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.colors.gray[0],
+                  backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.colors.gray[0],
                 },
               })}
             >

@@ -3,8 +3,8 @@ import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./scss/index.scss";
-import { store } from "./store/store";
 import "./firebase";
+import { store } from "./store/store";
 
 const container = document.getElementById("root")!;
 const root = createRoot(container);

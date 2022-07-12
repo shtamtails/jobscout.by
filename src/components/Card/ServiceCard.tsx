@@ -1,7 +1,7 @@
 import { Badge, Button, Card, Group, Image, Text, ColorScheme, useMantineTheme } from "@mantine/core";
+import { ICard } from "@interface/ICard";
 import React, { ReactElement } from "react";
 import { Star } from "tabler-icons-react";
-import { ICard } from "../interface/ICard";
 
 export const ServiceCard: React.FC<ICard> = ({ image, title, rating, about, link }) => {
   const theme = useMantineTheme();
