@@ -2,18 +2,16 @@ import React, { useState } from "react";
 import { useForm } from "@mantine/form";
 import { Button, Text, TextInput } from "@mantine/core";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import { IRetrieveForm } from "../../interface/IForms";
+import { disableButtonTimer } from "../../utils/disableButtonTimer";
+import { firebaseErorHandler } from "../../firebase/firebaseErrorHandler";
 
-interface RetrieveModalForm {
-  setAuthOverlay: Function;
-}
-
-export const RetrieveForm: React.FC<RetrieveModalForm> = ({ setAuthOverlay }) => {
-  const DISABLED_TIME = 60;
-
+export const RetrieveForm: React.FC<IRetrieveForm> = ({ setLoadingOverlay }) => {
   const [messageInput, setMessageInput] = useState<boolean>(false);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
-  const [counter, setCounter] = useState<number | null>(DISABLED_TIME);
+  const [counter, setCounter] = useState<number>(60);
+
   const retrieveForm = useForm({
     initialValues: { email: "" },
     validate: (values) => ({
@@ -21,45 +19,28 @@ export const RetrieveForm: React.FC<RetrieveModalForm> = ({ setAuthOverlay }) =>
     }),
   });
 
-  const disableCounter = () => {
-    let TIMER = DISABLED_TIME;
-    const interval = setInterval(() => {
-      TIMER -= 1;
-      setCounter(TIMER);
-
-      if (TIMER === 0) {
-        clearInterval(interval);
-        setButtonDisabled(false);
-      }
-    }, 1000);
-  };
-
-  const handleSubmit = (values: object): void => {
+  const handleRetrieve = (): void => {
     setEmailError(null);
-    setAuthOverlay(true);
-
+    setLoadingOverlay(true);
     const auth = getAuth();
     sendPasswordResetEmail(auth, retrieveForm.values.email)
       .then(() => {
         setMessageInput(true);
-        setButtonDisabled(true);
-        disableCounter();
-        setAuthOverlay(false);
+        disableButtonTimer({
+          time: counter,
+          setCounter: setCounter,
+          setButtonDisalbed: setButtonDisabled,
+        });
+        setLoadingOverlay(false);
       })
       .catch((error) => {
-        setAuthOverlay(false);
-
-        const errorMessage = error.message;
-        console.log(errorMessage);
-        errorMessage === "Firebase: Error (auth/too-many-requests)." &&
-          setEmailError("Too many requests");
-        errorMessage === "Firebase: Error (auth/user-not-found)." &&
-          setEmailError("User with this email does not exist");
+        setLoadingOverlay(false);
+        firebaseErorHandler({ code: error.code, setEmailError });
       });
   };
 
   return (
-    <form onSubmit={retrieveForm.onSubmit((values) => handleSubmit(values))}>
+    <form onSubmit={retrieveForm.onSubmit(handleRetrieve)}>
       <TextInput
         placeholder="E-mail adress or phone number"
         label="E-mail adress or phone number"
@@ -74,11 +55,7 @@ export const RetrieveForm: React.FC<RetrieveModalForm> = ({ setAuthOverlay }) =>
           Message with link to reset your password was sent.
         </Text>
       )}
-      <Button
-        type="submit"
-        leftIcon={buttonDisabled && `(${counter?.toString()})`}
-        disabled={buttonDisabled}
-      >
+      <Button type="submit" leftIcon={buttonDisabled && `(${counter?.toString()})`} disabled={buttonDisabled}>
         Send message
       </Button>
     </form>

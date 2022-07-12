@@ -1,21 +1,18 @@
 import { useForm } from "@mantine/form";
 import React from "react";
-import { useAppDispatch } from "../hooks/redux";
-import { setUser } from "../store/reducers/userReducer";
+import { useAppDispatch } from "../../hooks/redux";
+import { setUser } from "../../store/reducers/userReducer";
 import { Button, Checkbox, Group, PasswordInput, Text, TextInput } from "@mantine/core";
 import { Link } from "react-router-dom";
 import { createUserWithEmailAndPassword, getAuth, UserCredential } from "firebase/auth";
 import { useState } from "react";
 import { FirebaseError } from "firebase/app";
 import { ref, set } from "firebase/database";
-import { database } from "../firebase";
+import { database } from "../../firebase";
+import { IRegisterForm } from "../../interface/IForms";
+import { firebaseErorHandler } from "../../firebase/firebaseErrorHandler";
 
-interface RegisterModalForm {
-  setOpened: Function;
-  setAuthOverlay: Function;
-}
-
-export const RegisterForm: React.FC<RegisterModalForm> = ({ setOpened, setAuthOverlay }) => {
+export const RegisterForm: React.FC<IRegisterForm> = ({ setOpened, setLoadingOverlay }) => {
   const dispatch = useAppDispatch();
   const [emailError, setEmailError] = useState<string | null>(null);
 
@@ -29,17 +26,15 @@ export const RegisterForm: React.FC<RegisterModalForm> = ({ setOpened, setAuthOv
 
     validate: {
       email: (value) => (value.indexOf("@") === -1 ? "Invalid email adress" : null),
-      password: (value) =>
-        value.length < 6 ? "Password length should be more than 6 symbols" : null,
-      confirmPassword: (value, values) =>
-        value === values.password ? null : "Passwords should match",
+      password: (value) => (value.length < 6 ? "Password length should be more than 6 symbols" : null),
+      confirmPassword: (value, values) => (value === values.password ? null : "Passwords should match"),
       termsOfService: (value) => (value ? null : "You should accept terms of serivce"),
     },
   });
 
   const handleRegistration = () => {
     setEmailError(null);
-    setAuthOverlay(true);
+    setLoadingOverlay(true);
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, registerForm.values.email, registerForm.values.password)
       .then(({ user }: UserCredential) => {
@@ -56,16 +51,15 @@ export const RegisterForm: React.FC<RegisterModalForm> = ({ setOpened, setAuthOv
             verified: user.emailVerified,
           })
         );
-        setAuthOverlay(false);
+        setLoadingOverlay(false);
         setOpened(false);
 
         window.location.reload();
       })
 
       .catch((error: FirebaseError) => {
-        setAuthOverlay(false);
-        error.message === "Firebase: Error (auth/email-already-in-use)." &&
-          setEmailError("Email is already registered");
+        setLoadingOverlay(false);
+        firebaseErorHandler({ code: error.code, setEmailError });
       });
   };
 

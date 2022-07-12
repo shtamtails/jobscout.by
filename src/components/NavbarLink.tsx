@@ -1,4 +1,3 @@
-import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
 import { Text } from "@mantine/core";
 import React from "react";
 

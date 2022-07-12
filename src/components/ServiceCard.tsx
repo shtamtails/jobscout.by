@@ -1,33 +1,13 @@
-import {
-  Badge,
-  Button,
-  Card,
-  Group,
-  Image,
-  Text,
-  ColorScheme,
-  useMantineTheme,
-} from "@mantine/core";
+import { Badge, Button, Card, Group, Image, Text, ColorScheme, useMantineTheme } from "@mantine/core";
 import React, { ReactElement } from "react";
-import { Star, Icon as TablerIcon, Icon } from "tabler-icons-react";
-
-interface ICard {
-  image: string;
-  title: string;
-  rating: number;
-  about: string;
-  link: string;
-}
+import { Star } from "tabler-icons-react";
+import { ICard } from "../interface/ICard";
 
 export const ServiceCard: React.FC<ICard> = ({ image, title, rating, about, link }) => {
-  // Transform rating-number to array of icons of stars
-  // rating = 3 => 3 filled stars
   const theme = useMantineTheme();
   const starsRating: ReactElement[] = [];
   for (let i = 0; i < rating; i++) {
-    starsRating.push(
-      <Star key={i} size={12} fill={theme.colorScheme === "dark" ? "#ffffff" : "#e64980"} />
-    );
+    starsRating.push(<Star key={i} size={12} fill={theme.colorScheme === "dark" ? "#ffffff" : "#e64980"} />);
   }
   for (let z = rating; z < 5; z++) {
     starsRating.push(<Star key={z} size={12} />);

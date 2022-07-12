@@ -1,12 +1,8 @@
 import { Box } from "@mantine/core";
 import React from "react";
-import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
+import { ISettings } from "../../interface/ISettings";
 
-interface SettingsSection {
-  children: ReactJSXElement;
-}
-
-export const SettingSection: React.FC<SettingsSection> = ({ children }) => {
+export const SettingSection: React.FC<ISettings> = ({ children }) => {
   return (
     <Box
       sx={(theme) => ({

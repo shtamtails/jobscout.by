@@ -1,8 +1,8 @@
 import { Button, PasswordInput, Text, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import React from "react";
-import { useAppDispatch } from "../hooks/redux";
-import { setUser } from "../store/reducers/userReducer";
+import { useAppDispatch } from "../../hooks/redux";
+import { setUser } from "../../store/reducers/userReducer";
 import {
   browserLocalPersistence,
   getAuth,
@@ -12,21 +12,15 @@ import {
 } from "firebase/auth";
 import { useState } from "react";
 import { FirebaseError } from "firebase/app";
+import { ILoginForm } from "../../interface/IForms";
+import { firebaseErorHandler } from "../../firebase/firebaseErrorHandler";
 
-interface LoginModalForm {
-  setOpened: Function;
-  setLoginModal: Function;
-  setRegisterModal: Function;
-  setRetrieveModal: Function;
-  setAuthOverlay: Function;
-}
-
-export const LoginForm: React.FC<LoginModalForm> = ({
+export const LoginForm: React.FC<ILoginForm> = ({
   setOpened,
   setRegisterModal,
   setRetrieveModal,
   setLoginModal,
-  setAuthOverlay,
+  setLoadingOverlay,
 }) => {
   const dispatch = useAppDispatch();
   const [loginError, setLoginError] = useState<string | null>(null);
@@ -38,14 +32,14 @@ export const LoginForm: React.FC<LoginModalForm> = ({
     },
 
     validate: {
-      password: (value) =>
-        value.length < 6 ? "Password length should be longer than 6 symbols" : null,
+      password: (value) => (value.length < 6 ? "Password length should be longer than 6 symbols" : null),
     },
   });
+
   const handleLogin = () => {
     setLoginError(null);
     setPasswordError(null);
-    setAuthOverlay(true);
+    setLoadingOverlay(true);
     const auth = getAuth();
     setPersistence(auth, browserLocalPersistence).then(() => {
       signInWithEmailAndPassword(auth, loginForm.values.username, loginForm.values.password)
@@ -60,22 +54,21 @@ export const LoginForm: React.FC<LoginModalForm> = ({
               username: user.displayName,
             })
           );
-          setAuthOverlay(false);
+          setLoadingOverlay(false);
           setOpened(false);
-          window.location.reload();
         })
         .catch((error: FirebaseError) => {
-          setAuthOverlay(false);
+          setLoadingOverlay(false);
 
-          error.message === "Firebase: Error (auth/invalid-email)." &&
-            setLoginError("Invalid email or username");
-          error.message === "Firebase: Error (auth/user-not-found)." &&
-            setLoginError("User not found");
-          error.message === "Firebase: Error (auth/wrong-password)." &&
-            setPasswordError("Invalid password");
+          firebaseErorHandler({
+            code: error.code,
+            setLoginError,
+            setPasswordError,
+          });
         });
     });
   };
+
   return (
     <form onSubmit={loginForm.onSubmit((values) => handleLogin())}>
       <TextInput

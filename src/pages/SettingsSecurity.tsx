@@ -1,17 +1,17 @@
 import { Button, Container, PasswordInput, Text, TextInput, useMantineTheme } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import React, { useState } from "react";
-import { SettingSection } from "../components/SettingSection";
-import { SettingFooter } from "../components/SettingFooter";
 import { getAuth, sendEmailVerification, updateEmail, updatePassword } from "firebase/auth";
 import { Check, Lock, Mail, Mailbox, Send } from "tabler-icons-react";
 import { FirebaseError } from "firebase/app";
 import { ReauthModal } from "../components/ReauthModal";
 import { showNotification } from "@mantine/notifications";
-import { SettingContainer } from "../components/SettingContainer";
+import { SettingContainer } from "../components/Settings/SettingContainer";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
 import { setEmail } from "../store/reducers/userReducer";
 import { DB_UPDATE_USER } from "../utils/updateDatabase";
+import { SettingFooter } from "../components/Settings/SettingFooter";
+import { SettingSection } from "../components/Settings/SettingSection";
 
 export const SettingsSecurity: React.FC = () => {
   const { email } = useAppSelector((user) => user.user);
@@ -123,8 +123,7 @@ export const SettingsSecurity: React.FC = () => {
           icon: <Send size={16} />,
           radius: "md",
           sx: {
-            backgroundColor:
-              theme.colorScheme === "dark" ? theme.colors.dark[5] : theme.colors.gray[8],
+            backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[5] : theme.colors.gray[8],
           },
         });
       });
@@ -183,15 +182,10 @@ export const SettingsSecurity: React.FC = () => {
             {!user?.emailVerified && (
               <SettingSection>
                 <div className="flex aic">
-                  <Button
-                    variant={theme.colorScheme === "dark" ? "light" : "filled"}
-                    onClick={sendVerificationEmail}
-                  >
+                  <Button variant={theme.colorScheme === "dark" ? "light" : "filled"} onClick={sendVerificationEmail}>
                     Verify Email
                   </Button>
-                  <Text pl="sm">
-                    You have to verify your email address to access certain features
-                  </Text>
+                  <Text pl="sm">You have to verify your email address to access certain features</Text>
                 </div>
               </SettingSection>
             )}
@@ -206,11 +200,7 @@ export const SettingsSecurity: React.FC = () => {
               />
             </SettingSection>
             <SettingSection>
-              <TextInput
-                label="New Email"
-                {...changeEmailForm.getInputProps("newEmail")}
-                icon={<Mail size={20} />}
-              />
+              <TextInput label="New Email" {...changeEmailForm.getInputProps("newEmail")} icon={<Mail size={20} />} />
             </SettingSection>
             <SettingFooter>
               <div className="flex jcfe">
@@ -231,9 +221,7 @@ export const SettingsSecurity: React.FC = () => {
       {callback === "password" && (
         <ReauthModal callback={changePassword} modal={reAuthModal} setModal={setReAuthModal} />
       )}
-      {callback === "email" && (
-        <ReauthModal callback={changeEmail} modal={reAuthModal} setModal={setReAuthModal} />
-      )}
+      {callback === "email" && <ReauthModal callback={changeEmail} modal={reAuthModal} setModal={setReAuthModal} />}
     </>
   );
 };

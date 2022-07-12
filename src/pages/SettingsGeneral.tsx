@@ -1,13 +1,4 @@
-import {
-  Avatar,
-  Card,
-  Button,
-  ActionIcon,
-  TextInput,
-  Text,
-  Modal,
-  useMantineTheme,
-} from "@mantine/core";
+import { Avatar, Card, Button, ActionIcon, TextInput, Text, Modal, useMantineTheme } from "@mantine/core";
 import React from "react";
 import { User, Trash, Check } from "tabler-icons-react";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
@@ -15,14 +6,14 @@ import { getAuth, updateProfile } from "firebase/auth";
 import { setImage, setUsername } from "../store/reducers/userReducer";
 import { useState } from "react";
 import { Container } from "@mantine/core";
-import { SettingFooter } from "../components/SettingFooter";
-import { SettingSection } from "../components/SettingSection";
 import { useForm } from "@mantine/form";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { dropzoneChildren } from "../components/DropzoneSettings";
 import { firebaseDelete, firebaseUpload } from "../hooks/firebase";
-import { SettingContainer } from "../components/SettingContainer";
+import { SettingContainer } from "../components/Settings/SettingContainer";
 import { DB_UPDATE_USER } from "../utils/updateDatabase";
+import { SettingSection } from "../components/Settings/SettingSection";
+import { SettingFooter } from "../components/Settings/SettingFooter";
 
 export const SettingsGeneral: React.FC = () => {
   const { image, username } = useAppSelector((state) => state.user);
@@ -88,8 +79,7 @@ export const SettingsGeneral: React.FC = () => {
       username: ``,
     },
     validate: {
-      username: (value) =>
-        value.length < 4 ? "Username should be minimum 4 characters long" : null,
+      username: (value) => (value.length < 4 ? "Username should be minimum 4 characters long" : null),
     },
   });
 
@@ -146,8 +136,7 @@ export const SettingsGeneral: React.FC = () => {
                   size="sm"
                   styles={{
                     root: {
-                      color:
-                        theme.colorScheme === "dark" ? theme.colors.dark[1] : theme.colors.gray[7],
+                      color: theme.colorScheme === "dark" ? theme.colors.dark[1] : theme.colors.gray[7],
                       lineHeight: 1.5,
                     },
                   }}
@@ -195,13 +184,7 @@ export const SettingsGeneral: React.FC = () => {
         </SettingContainer>
       </Container>
 
-      <Modal
-        size="xl"
-        centered
-        opened={dropdownModal}
-        onClose={() => setDropdownModal(false)}
-        title="Upload an image"
-      >
+      <Modal size="xl" centered opened={dropdownModal} onClose={() => setDropdownModal(false)} title="Upload an image">
         <Dropzone
           multiple={false}
           onDrop={(files) => uploadImage(files[0])}
