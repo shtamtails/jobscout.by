@@ -1,1 +1,1 @@
-Source code for jobscout.by
+Source code for jobscout.by (currently in development)
