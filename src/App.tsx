@@ -49,7 +49,6 @@ function App() {
               navbar={
                 <Navbar width={{ base: 300 }} p="xs">
                   <NavbarContent />
-                  {/* Navbar content */}
                 </Navbar>
               }
               header={
