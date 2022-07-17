@@ -1,20 +1,21 @@
 import { useForm } from "@mantine/form";
 import React from "react";
-import { useAppDispatch } from "../../hooks/redux";
-import { setUser } from "../../store/reducers/userReducer";
 import { Button, Checkbox, Group, PasswordInput, Text, TextInput } from "@mantine/core";
 import { Link } from "react-router-dom";
 import { createUserWithEmailAndPassword, getAuth, UserCredential } from "firebase/auth";
 import { useState } from "react";
 import { FirebaseError } from "firebase/app";
-import { ref, set } from "firebase/database";
+import { useAppDispatch } from "hooks/redux";
+import { IRegisterForm } from "interface/IForms";
+import { firebaseErrorHandler } from "utils/firebase/firebaseErrorHandler";
 import { database } from "../../firebase";
-import { IRegisterForm } from "../../interface/IForms";
-import { firebaseErorHandler } from "../../firebase/firebaseErrorHandler";
+import { set, ref } from "firebase/database";
+import { setUser } from "store/reducers/userReducer";
+import { firebaseRegister } from "utils/firebase/firebaseRegister";
 
 export const RegisterForm: React.FC<IRegisterForm> = ({ setOpened, setLoadingOverlay }) => {
+  const [error, setError] = useState<string | null>(null);
   const dispatch = useAppDispatch();
-  const [emailError, setEmailError] = useState<string | null>(null);
 
   const registerForm = useForm({
     initialValues: {
@@ -33,11 +34,14 @@ export const RegisterForm: React.FC<IRegisterForm> = ({ setOpened, setLoadingOve
   });
 
   const handleRegistration = () => {
-    setEmailError(null);
+    setError(null);
     setLoadingOverlay(true);
-    const auth = getAuth();
-    createUserWithEmailAndPassword(auth, registerForm.values.email, registerForm.values.password)
-      .then(({ user }: UserCredential) => {
+
+    firebaseRegister({
+      email: registerForm.values.email,
+      password: registerForm.values.password,
+      onSuccess: (response: UserCredential) => {
+        const user = response.user;
         set(ref(database, `users/` + user.uid), {
           email: user.email,
           id: user.uid,
@@ -53,25 +57,23 @@ export const RegisterForm: React.FC<IRegisterForm> = ({ setOpened, setLoadingOve
         );
         setLoadingOverlay(false);
         setOpened(false);
-
-        window.location.reload();
-      })
-
-      .catch((error: FirebaseError) => {
+      },
+      onFail: (error: FirebaseError) => {
         setLoadingOverlay(false);
-        firebaseErorHandler({ code: error.code, setEmailError });
-      });
+        setError(firebaseErrorHandler({ code: error.code, notificate: true }));
+      },
+    });
   };
 
   return (
-    <form onSubmit={registerForm.onSubmit((values) => handleRegistration())}>
+    <form onSubmit={registerForm.onSubmit(handleRegistration)}>
       <TextInput
         placeholder="E-mail"
         label="E-mail"
         required
         size="md"
         className="m-v-md"
-        error={emailError}
+        error={error}
         {...registerForm.getInputProps("email")}
       />
 

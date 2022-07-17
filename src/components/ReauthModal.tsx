@@ -1,6 +1,5 @@
 import { Modal } from "@mantine/core";
-
-import { IReauthModal } from "../interface/IModals";
+import { IReauthModal } from "interface/IModals";
 import { ReauthForm } from "./Forms/ReauthForm";
 
 export const ReauthModal: React.FC<IReauthModal> = ({ callback, modal, setModal }) => {

@@ -1,6 +1,6 @@
 import { Anchor, Breadcrumbs, Container, SimpleGrid } from "@mantine/core";
+import { ServiceCard } from "components/Card/ServiceCard";
 import React from "react";
-import { ServiceCard } from "../components/Card/ServiceCard";
 
 export const Content: React.FC = () => {
   const items = [

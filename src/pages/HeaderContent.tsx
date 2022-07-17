@@ -14,7 +14,6 @@ import {
 } from "@mantine/core";
 import React from "react";
 import { useState } from "react";
-import { useAppSelector, useAppDispatch } from "../hooks/redux";
 import {
   Sun,
   MoonStars,
@@ -26,10 +25,12 @@ import {
   DoorEnter,
   BrandReactNative,
 } from "tabler-icons-react";
-import { Login } from "./Login";
-import { removeUser, setLanguage } from "../store/reducers/userReducer";
 import { getAuth, signOut } from "firebase/auth";
 import { Link } from "react-router-dom";
+
+import { Login } from "./Login";
+import { useAppSelector, useAppDispatch } from "hooks/redux";
+import { setLanguage, removeUser } from "store/reducers/userReducer";
 import { DB_UPDATE_USER } from "utils/updateDatabase";
 
 export const HeaderContent: React.FC = () => {
@@ -83,7 +84,7 @@ export const HeaderContent: React.FC = () => {
         <Link to="/">
           <div className="app-logo">
             <BrandReactNative size={36} />
-            <Text pl="xs" size="xl" style={{ fontWeight: "800" }}>
+            <Text pl="xs" size="xl" style={{ fontWeight: 800 }}>
               FOOBARBAZ
             </Text>
           </div>

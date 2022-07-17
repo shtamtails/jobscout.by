@@ -1,8 +1,9 @@
+import { database } from "../firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { child, get, onValue, ref } from "firebase/database";
-import { database } from "../firebase";
-import { removeUser, setLanguage, setTheme, setUser, IUser } from "../store/reducers/userReducer";
-import { AppDispatch } from "../store/store";
+import { AppDispatch } from "store/store";
+import { IUser } from "interface/IUser";
+import { setUser, setTheme, setLanguage, removeUser } from "store/reducers/userReducer";
 
 export const initializeUser = () => (dispatch: AppDispatch) => {
   const auth = getAuth();

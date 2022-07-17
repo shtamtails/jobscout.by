@@ -1,9 +1,9 @@
 import { Modal, LoadingOverlay } from "@mantine/core";
+import { LoginForm } from "components/Forms/LoginForm";
+import { RegisterForm } from "components/Forms/RegisterForm";
+import { RetrieveForm } from "components/Forms/RetrieveForm";
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { LoginForm } from "../components/Forms/LoginForm";
-import { RegisterForm } from "../components/Forms/RegisterForm";
-import { RetrieveForm } from "../components/Forms/RetrieveForm";
 
 interface loginProps {
   opened: boolean;

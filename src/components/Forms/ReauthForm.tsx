@@ -1,13 +1,13 @@
-import { Button, PasswordInput } from "@mantine/core";
+import { PasswordInput, Button } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { FirebaseError } from "firebase/app";
-import { EmailAuthProvider, getAuth, reauthenticateWithCredential, User } from "firebase/auth";
-import React, { useMemo, useState } from "react";
-import { IReauthForm } from "../../interface/IForms";
-import { firebaseErorHandler } from "../../firebase/firebaseErrorHandler";
+import { getAuth, EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
+import { IReauthForm } from "interface/IForms";
+import { useState } from "react";
+import { firebaseErrorHandler } from "utils/firebase/firebaseErrorHandler";
 
 export const ReauthForm: React.FC<IReauthForm> = ({ callback, setModal }) => {
-  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const currentPasswordForm = useForm({
     initialValues: {
@@ -31,18 +31,14 @@ export const ReauthForm: React.FC<IReauthForm> = ({ callback, setModal }) => {
           callback();
         })
         .catch((error: FirebaseError) => {
-          firebaseErorHandler({ code: error.code, setPasswordError });
+          setError(firebaseErrorHandler({ code: error.code, notificate: true }));
         });
     }
   };
 
   return (
     <form onSubmit={currentPasswordForm.onSubmit(reAuthUser)}>
-      <PasswordInput
-        error={passwordError}
-        label="Current password"
-        {...currentPasswordForm.getInputProps("password")}
-      />
+      <PasswordInput error={error} label="Current password" {...currentPasswordForm.getInputProps("password")} />
       <Button fullWidth mt="md" mb="xs" type="submit">
         Confirm
       </Button>

@@ -2,7 +2,7 @@ import { Button, Container, PasswordInput, Text, TextInput, useMantineTheme } fr
 import { useForm } from "@mantine/form";
 import React, { useState } from "react";
 import { getAuth, sendEmailVerification, updateEmail, updatePassword } from "firebase/auth";
-import { Check, Lock, Mail, Mailbox, Send } from "tabler-icons-react";
+import { Check, Lock, Mail, Send } from "tabler-icons-react";
 import { FirebaseError } from "firebase/app";
 import { showNotification } from "@mantine/notifications";
 import { ReauthModal } from "components/ReauthModal";

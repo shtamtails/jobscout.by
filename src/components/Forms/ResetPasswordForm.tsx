@@ -1,12 +1,13 @@
 import { PasswordInput, Button, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { showNotification } from "@mantine/notifications";
 import { FirebaseError } from "firebase/app";
 import { confirmPasswordReset, getAuth } from "firebase/auth";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { firebaseErorHandler } from "../../firebase/firebaseErrorHandler";
+import { firebaseErrorHandler } from "utils/firebase/firebaseErrorHandler";
 
-export const RetrieveNewPasswordForm = () => {
+export const ResetPasswordForm = () => {
   const [error, setError] = useState<string | null>(null);
 
   const passwordForm = useForm({
@@ -27,12 +28,12 @@ export const RetrieveNewPasswordForm = () => {
 
   const changePassword = () => {
     confirmPasswordReset(auth, code, passwordForm.values.password)
-      .then(async () => {
+      .then((response) => {
         navigate("/");
+        showNotification({ title: "Success!", message: "Password has been succesfully reseted", color: "green" });
       })
       .catch((error: FirebaseError) => {
-        console.log(error.message);
-        firebaseErorHandler({ code: error.code, setOtherError: setError });
+        setError(firebaseErrorHandler({ code: error.code, notificate: true }));
       });
   };
 

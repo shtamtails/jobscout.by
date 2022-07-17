@@ -1,19 +1,19 @@
-import { Button, PasswordInput, Text, TextInput } from "@mantine/core";
+import { TextInput, PasswordInput, Button, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import React from "react";
-import { useAppDispatch } from "../../hooks/redux";
-import { setUser } from "../../store/reducers/userReducer";
+import { FirebaseError } from "firebase/app";
 import {
-  browserLocalPersistence,
   getAuth,
   setPersistence,
+  browserLocalPersistence,
   signInWithEmailAndPassword,
   UserCredential,
 } from "firebase/auth";
+import { useAppDispatch } from "hooks/redux";
+import { ILoginForm } from "interface/IForms";
 import { useState } from "react";
-import { FirebaseError } from "firebase/app";
-import { ILoginForm } from "../../interface/IForms";
-import { firebaseErorHandler } from "../../firebase/firebaseErrorHandler";
+import { setUser } from "store/reducers/userReducer";
+import { firebaseErrorHandler } from "utils/firebase/firebaseErrorHandler";
+import { firebaseLogin } from "utils/firebase/firebaseLogin";
 
 export const LoginForm: React.FC<ILoginForm> = ({
   setOpened,
@@ -22,9 +22,9 @@ export const LoginForm: React.FC<ILoginForm> = ({
   setLoginModal,
   setLoadingOverlay,
 }) => {
+  const [error, setError] = useState<string | null>(null);
+
   const dispatch = useAppDispatch();
-  const [loginError, setLoginError] = useState<string | null>(null);
-  const [passwordError, setPasswordError] = useState<string | null>(null);
   const loginForm = useForm({
     initialValues: {
       username: "",
@@ -37,35 +37,31 @@ export const LoginForm: React.FC<ILoginForm> = ({
   });
 
   const handleLogin = () => {
-    setLoginError(null);
-    setPasswordError(null);
+    setError(null);
     setLoadingOverlay(true);
-    const auth = getAuth();
-    setPersistence(auth, browserLocalPersistence).then(() => {
-      signInWithEmailAndPassword(auth, loginForm.values.username, loginForm.values.password)
-        .then(({ user }: UserCredential) => {
-          dispatch(
-            setUser({
-              authorized: true,
-              email: user.email,
-              id: user.uid,
-              verified: user.emailVerified,
-              image: user.photoURL,
-              username: user.displayName,
-            })
-          );
-          setLoadingOverlay(false);
-          setOpened(false);
-        })
-        .catch((error: FirebaseError) => {
-          setLoadingOverlay(false);
 
-          firebaseErorHandler({
-            code: error.code,
-            setLoginError,
-            setPasswordError,
-          });
-        });
+    firebaseLogin({
+      email: loginForm.values.username,
+      password: loginForm.values.password,
+      onSuccess: (response: UserCredential) => {
+        const user = response.user;
+        dispatch(
+          setUser({
+            authorized: true,
+            email: user.email,
+            id: user.uid,
+            verified: user.emailVerified,
+            image: user.photoURL,
+            username: user.displayName,
+          })
+        );
+        setLoadingOverlay(false);
+        setOpened(false);
+      },
+      onFail: (error: FirebaseError) => {
+        setLoadingOverlay(false);
+        setError(firebaseErrorHandler({ code: error.code, notificate: true }));
+      },
     });
   };
 
@@ -77,7 +73,6 @@ export const LoginForm: React.FC<ILoginForm> = ({
         required
         size="md"
         className="m-v-md"
-        error={loginError}
         {...loginForm.getInputProps("username")}
       />
       <PasswordInput
@@ -85,7 +80,7 @@ export const LoginForm: React.FC<ILoginForm> = ({
         className="m-v-md"
         size="md"
         label="Password"
-        error={passwordError}
+        error={error}
         required
         {...loginForm.getInputProps("password")}
       />

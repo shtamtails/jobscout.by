@@ -1,6 +1,6 @@
 import { Box } from "@mantine/core";
+import { ISettings } from "interface/ISettings";
 import React from "react";
-import { ISettings } from "../../interface/ISettings";
 
 export const SettingSection: React.FC<ISettings> = ({ children }) => {
   return (

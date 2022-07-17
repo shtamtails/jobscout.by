@@ -1,17 +1,6 @@
-import {
-  Accordion,
-  AccordionItem,
-  ActionIcon,
-  Autocomplete,
-  Button,
-  Checkbox,
-  RangeSlider,
-  Slider,
-  Text,
-} from "@mantine/core";
-import React, { useState } from "react";
-import { Star } from "tabler-icons-react";
-import { NavbarLink } from "../components/NavbarLink";
+import { Accordion, Autocomplete, Button, Checkbox } from "@mantine/core";
+import { NavbarLink } from "components/NavbarLink";
+import React from "react";
 
 export const NavbarContent: React.FC = () => {
   const accordionStyles = {
@@ -61,11 +50,7 @@ export const NavbarContent: React.FC = () => {
         <Accordion.Item label="Filter">
           <Autocomplete label="Country" data={[`Belarus`]} pb="md" />
           <Autocomplete label="City" data={[`Minsk`, "Zhodino", "Borisov"]} pb="md" />
-          <Autocomplete
-            label="Metro"
-            data={[`Nemiha`, "Prospekt pobedy", "Kastrychnitskaya"]}
-            pb="md"
-          />
+          <Autocomplete label="Metro" data={[`Nemiha`, "Prospekt pobedy", "Kastrychnitskaya"]} pb="md" />
           <Checkbox label="Only verified" />
 
           <div className="flex jcfe">

@@ -1,19 +1,6 @@
 import { ColorScheme } from "@mantine/core";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getAuth } from "firebase/auth";
-import { ref, update } from "firebase/database";
-import { database } from "../../firebase";
-
-export interface IUser {
-  authorized: boolean;
-  email: string | null;
-  id: string | null;
-  verified: boolean;
-  image?: string | null;
-  username?: string | null;
-  theme?: ColorScheme;
-  language?: string;
-}
+import { IUser } from "interface/IUser";
 
 const initialState: IUser = {
   authorized: false,

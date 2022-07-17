@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { useForm } from "@mantine/form";
 import { Button, Text, TextInput } from "@mantine/core";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
-import { IRetrieveForm } from "../../interface/IForms";
-import { disableButtonTimer } from "../../utils/disableButtonTimer";
-import { firebaseErorHandler } from "../../firebase/firebaseErrorHandler";
+import { IRetrieveForm } from "interface/IForms";
+import { disableButtonTimer } from "utils/disableButtonTimer";
+import { firebaseErrorHandler } from "utils/firebase/firebaseErrorHandler";
 
 export const RetrieveForm: React.FC<IRetrieveForm> = ({ setLoadingOverlay }) => {
+  const [error, setError] = useState<string | null>(null);
   const [messageInput, setMessageInput] = useState<boolean>(false);
-  const [emailError, setEmailError] = useState<string | null>(null);
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
   const [counter, setCounter] = useState<number>(60);
 
@@ -20,7 +20,7 @@ export const RetrieveForm: React.FC<IRetrieveForm> = ({ setLoadingOverlay }) => 
   });
 
   const handleRetrieve = (): void => {
-    setEmailError(null);
+    setError(null);
     setLoadingOverlay(true);
     const auth = getAuth();
     sendPasswordResetEmail(auth, retrieveForm.values.email)
@@ -35,7 +35,7 @@ export const RetrieveForm: React.FC<IRetrieveForm> = ({ setLoadingOverlay }) => 
       })
       .catch((error) => {
         setLoadingOverlay(false);
-        firebaseErorHandler({ code: error.code, setEmailError });
+        setError(firebaseErrorHandler({ code: error.code, notificate: true }));
       });
   };
 
@@ -46,7 +46,7 @@ export const RetrieveForm: React.FC<IRetrieveForm> = ({ setLoadingOverlay }) => 
         label="E-mail adress or phone number"
         required
         size="md"
-        error={emailError}
+        error={error}
         className="m-v-md"
         {...retrieveForm.getInputProps("email")}
       />

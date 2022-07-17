@@ -1,6 +1,6 @@
 import { Box } from "@mantine/core";
+import { ISettings } from "interface/ISettings";
 import React from "react";
-import { ISettings } from "../../interface/ISettings";
 
 export const SettingFooter: React.FC<ISettings> = ({ children }) => {
   return (
